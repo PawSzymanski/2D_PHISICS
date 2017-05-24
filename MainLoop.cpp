@@ -26,17 +26,16 @@ void MainLoop::setSystems()
 	ex.systems.add<MovementSystem>();
 	ex.systems.add<MouseDragSystem>(window, camera);
 	ex.systems.add<ForcesSystem>(ex.events);
-	ex.systems.add<CCCollisionSystem>();
+	ex.systems.add<CollisionSystem>();
 	ex.systems.configure();
 }
 
 void MainLoop::update(float dt)
 {
-	ex.systems.update<MovementSystem>(dt);
+	ex.systems.update<CollisionSystem>(dt);
 	ex.systems.update<MouseDragSystem>(dt);
-	ex.systems.update<CCCollisionSystem>(dt);
-
 	ex.systems.update<ForcesSystem>(dt);
+	ex.systems.update<MovementSystem>(dt);
 }
 
 void MainLoop::render()

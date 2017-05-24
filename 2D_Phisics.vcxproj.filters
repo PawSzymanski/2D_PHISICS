@@ -36,7 +36,10 @@
     <ClInclude Include="Events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="systems\CCollisionSystem.h">
+    <ClInclude Include="systems\CollisionSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="isCollidingFuns.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,7 +62,10 @@
     <ClCompile Include="systems\ForcesSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="systems\CCollisionSystem.cpp">
+    <ClCompile Include="systems\CollisionSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="isCollidingFuns.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,7 +4,7 @@
 #include <entityx/entityx.h>
 #include <SFML\Graphics.hpp>
 
-#include "systems\CCollisionSystem.h"
+#include "systems\CollisionSystem.h"
 #include "systems\MovementSystem.h"
 #include "systems\RenderSystem.h"
 #include "systems\MouseDragSystem.h"

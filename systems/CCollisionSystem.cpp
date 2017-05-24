@@ -18,7 +18,6 @@ bool CCCollisionSystem::isColliding(entityx::Entity en1, entityx::Entity en2)
 	{
 		return true;
 	}
-	
 	return false;
 }
 

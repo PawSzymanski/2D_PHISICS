@@ -157,16 +157,18 @@
   <ItemGroup>
     <ClInclude Include="components.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="isCollidingFuns.h" />
     <ClInclude Include="MainLoop.h" />
-    <ClInclude Include="systems\CCollisionSystem.h" />
+    <ClInclude Include="systems\CollisionSystem.h" />
     <ClInclude Include="systems\ForcesSystem.h" />
     <ClInclude Include="systems\MouseDragSystem.h" />
     <ClInclude Include="systems\RenderSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="isCollidingFuns.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainLoop.cpp" />
-    <ClCompile Include="systems\CCollisionSystem.cpp" />
+    <ClCompile Include="systems\CollisionSystem.cpp" />
     <ClCompile Include="systems\ForcesSystem.cpp" />
     <ClCompile Include="systems\MouseDragSystem.cpp" />
     <ClCompile Include="systems\MovementSystem.cpp" />
