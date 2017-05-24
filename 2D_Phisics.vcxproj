@@ -155,16 +155,19 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AutisticCmath.h" />
     <ClInclude Include="components.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="isCollidingFuns.h" />
     <ClInclude Include="MainLoop.h" />
+    <ClInclude Include="Manifold.h" />
     <ClInclude Include="systems\CollisionSystem.h" />
     <ClInclude Include="systems\ForcesSystem.h" />
     <ClInclude Include="systems\MouseDragSystem.h" />
     <ClInclude Include="systems\RenderSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AutisticCmath.cpp" />
     <ClCompile Include="isCollidingFuns.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainLoop.cpp" />

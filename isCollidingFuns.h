@@ -4,5 +4,7 @@
 #include <cmath>
 
 #include "components.h"
+#include "Manifold.h"
+#include "AutisticCmath.h"
 
-bool isColliding(entityx::Entity en1, entityx::Entity en2);
+bool isColliding(Manifold &);

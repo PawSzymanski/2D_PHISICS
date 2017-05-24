@@ -17,6 +17,20 @@ struct Rotation : public entityx::Component<Rotation>
 	float degree;
 };
 
+struct Mass : public entityx::Component<Mass>
+{
+	Mass(float mass)
+		:mass(mass) 
+		{
+		if (mass != 0)
+			invMass = 1.0f / mass;
+		else
+			invMass = 0;
+		}
+	float mass,
+		  invMass;
+};
+
 struct LinearVelocity : public entityx::Component<LinearVelocity>
 {
 	LinearVelocity(sf::Vector2f & vel)
