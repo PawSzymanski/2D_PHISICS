@@ -5,6 +5,6 @@
 
 #include "components.h"
 #include "Manifold.h"
-#include "AutisticCmath.h"
+#include "AutisticCmath.cpp"
 
-bool isColliding(Manifold &);
+void isColliding(Manifold &man);

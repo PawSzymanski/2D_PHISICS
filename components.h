@@ -13,7 +13,7 @@ struct Position : public entityx::Component<Position>
 struct Rotation : public entityx::Component<Rotation>
 {
 	Rotation(float degree)
-		:degree(degree) {}
+		:degree(degree) {}		//in degrees!!!
 	float degree;
 };
 
@@ -41,8 +41,9 @@ struct LinearVelocity : public entityx::Component<LinearVelocity>
 struct AngularVelocity : public entityx::Component<AngularVelocity>
 {
 	AngularVelocity(float degree)
-		:degree(degree) {}
+		:degree(degree) {}  // in degrees!!!
 	float degree;
+	float radians() { return (degree / 57.29577f); }
 };
 
 struct Circle : public entityx::Component<Circle>
@@ -83,5 +84,20 @@ struct AngularForce :entityx::Component<AngularForce>
 {
 	AngularForce() : force(0.0f)
 	{}
-	float force;
+	float force;					// force in radians!!!
+};
+
+struct MOfInertia : entityx::Component<MOfInertia>
+{
+	MOfInertia(float i)
+		:I(i)
+	{
+		if (I != 0)
+			invI = 1.0f / I;
+		else
+			invI = 0;
+	}
+
+	float I;
+	float invI;
 };

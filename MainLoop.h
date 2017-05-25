@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <entityx/entityx.h>
+#include <entityx\entityx.h>
 #include <SFML\Graphics.hpp>
 
 #include "systems\CollisionSystem.h"

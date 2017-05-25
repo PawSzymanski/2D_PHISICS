@@ -1,5 +1,4 @@
 #include "MouseDragSystem.h"
-#define CROSS(a,b) (a.x * b.y - a.y * b.x)
 
 MouseDragSystem::MouseDragSystem(sf::RenderWindow & win, sf::View & camera)
 	:win(win), camera(camera), line_started(false)
@@ -27,7 +26,7 @@ void MouseDragSystem::update(entityx::EntityManager & en, entityx::EventManager 
 		sf::Vector2f p = t.rotate(rot->degree) * click_pos;
 
 		//std::cout << click_pos.x << " " << click_pos.y << std::endl;
-		std::cout << CROSS(click_pos, impulse) << std::endl;
+		//std::cout << crossVV(click_pos, impulse) << std::endl;
 		ev.emit<ApplyForceEvent>(p, impulse, this->en);
 	}
 

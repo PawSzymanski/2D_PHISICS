@@ -17,12 +17,12 @@ inline sf::Vector2f crossSV(float a, const sf::Vector2f & v)
 
 inline float crossVV(const sf::Vector2f & a, const sf::Vector2f & b)
 {
-	return a.x * b.y + a.y * b.x;
+	return a.x * b.y - a.y * b.x;
 }
 
 inline float dot(const sf::Vector2f & a, const sf::Vector2f & b)
 {
-	return a.x * b.x + a.y*b.y;
+	return a.x * b.x + a.y * b.y;
 }
 
 inline float vecLenght(const sf::Vector2f & a)
@@ -42,10 +42,22 @@ inline sf::Vector2f vecNormalize(sf::Vector2f & a)
 
 inline float distance(const sf::Vector2f & a, const sf::Vector2f & b)
 {
-	return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
+	sf::Vector2f c = b - a;
+	return sqrt(dot(c,c));
 }
 
 inline float distanceSq(const sf::Vector2f & a, const sf::Vector2f & b)
 {
-	return ((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
+	sf::Vector2f c = b - a;
+	return dot(c,c);
+}
+
+inline bool equal(float a, float b)
+{
+	return std::abs(a - b) <= EPSILON;
+}
+
+inline float sqr(float a)
+{
+	return a*a;
 }

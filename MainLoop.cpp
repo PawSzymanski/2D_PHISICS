@@ -10,7 +10,7 @@ MainLoop::MainLoop()
 	camera.reset(sf::FloatRect(0, 0, 17.5, 10));
 	window.setView(camera);
 
-	createCircle(sf::Vector2f(1, 1), sf::Vector2f(0.5, 0.5), 0.5f, sf::Color::Green);
+	createCircle(sf::Vector2f(1, 1), sf::Vector2f(2, 2), 0.5f, sf::Color::Green);
 	createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 0.5f, sf::Color::Red);
 }
 
@@ -102,4 +102,6 @@ void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel, float r, sf::Col
 	en.assign<Transform>();
 	en.assign<AngularForce>();
 	en.assign<LinearForce>();
+	en.assign<Mass>(1);
+	en.assign<MOfInertia>(0.5f *r*r);
 }

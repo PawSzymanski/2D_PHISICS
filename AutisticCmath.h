@@ -2,6 +2,7 @@
 #include <SFML\Graphics.hpp>
 #include <cmath>
 
+const float EPSILON = 0.0001f;
 inline float abs_f(float);
 
 inline sf::Vector2f crossVS(const sf::Vector2f &v, float a);
@@ -15,3 +16,6 @@ inline float vecLenghtSq(const sf::Vector2f &a);
 inline sf::Vector2f vecNormalize(sf::Vector2f &a);
 inline float distance(const sf::Vector2f &a, const sf::Vector2f &b);
 inline float distanceSq(const sf::Vector2f & a, const sf::Vector2f & b);
+
+inline bool equal(float a, float b);
+inline float sqr(float a);

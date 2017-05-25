@@ -1,0 +1,18 @@
+﻿  RenderSystem.cpp
+e:\vsprojects\2d_phisics\systems\rendersystem.h(2): fatal error C1083: Cannot open include file: 'entityx\entityx.h': No such file or directory
+  MovementSystem.cpp
+e:\vsprojects\2d_phisics\systems\movementsystem.h(3): fatal error C1083: Cannot open include file: 'entityx\entityx.h': No such file or directory
+  MouseDragSystem.cpp
+e:\vsprojects\2d_phisics\systems\mousedragsystem.h(2): fatal error C1083: Cannot open include file: 'entityx\entityx.h': No such file or directory
+  ForcesSystem.cpp
+e:\vsprojects\2d_phisics\systems\forcessystem.h(5): fatal error C1083: Cannot open include file: 'entityx/entityx.h': No such file or directory
+  CollisionSystem.cpp
+e:\vsprojects\2d_phisics\systems\collisionsystem.h(2): fatal error C1083: Cannot open include file: 'entityx\entityx.h': No such file or directory
+  MainLoop.cpp
+e:\vsprojects\2d_phisics\mainloop.h(4): fatal error C1083: Cannot open include file: 'entityx/entityx.h': No such file or directory
+  main.cpp
+e:\vsprojects\2d_phisics\mainloop.h(4): fatal error C1083: Cannot open include file: 'entityx/entityx.h': No such file or directory
+  isCollidingFuns.cpp
+e:\vsprojects\2d_phisics\iscollidingfuns.h(2): fatal error C1083: Cannot open include file: 'entityx\entityx.h': No such file or directory
+  AutisticCmath.cpp
+  Generating Code...
