@@ -13,7 +13,8 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 	Mass::Handle massH1 = m.en1.component<Mass>(), massH2 = m.en2.component<Mass>();
 	AngularVelocity::Handle angvelH1 = m.en1.component<AngularVelocity>(), angvelH2 = m.en2.component<AngularVelocity>();
 	MOfInertia::Handle inertH1 = m.en1.component<MOfInertia>(), inertH2 = m.en2.component<MOfInertia>();
-	
+	Friction::Handle frH1 = m.en1.component<Friction>(), frH2 = m.en2.component<Friction>();
+
 	float invMassSum = massH1->invMass + massH1->invMass;
 	if (equal(invMassSum, 0))
 	{
@@ -40,6 +41,16 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 	float force = -velAlongNormal / invMassSum;
 
 	m.force = m.normal * force;
+	std::cout << contactVel.x << " " << contactVel.y << std::endl;
+	//friction 
+	contactVel -= m.normal * dot(contactVel, m.normal);
+
+	//from contact
+	contactVel *= -(frH1->fr + frH2->fr) / 2;
+
+	contactVel /= invMassSum;
+
+	m.force += contactVel;
 }
 
 void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager & ev, double dt)

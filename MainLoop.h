@@ -27,7 +27,7 @@ public:
 	void render();
 
 private:
-	void createCircle(sf::Vector2f pos, sf::Vector2f vel, float r, sf::Color col);
+	void createCircle(sf::Vector2f pos, sf::Vector2f vel, float r, sf::Color col, float);
 	
 };
 

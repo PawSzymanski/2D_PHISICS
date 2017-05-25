@@ -101,3 +101,9 @@ struct MOfInertia : entityx::Component<MOfInertia>
 	float I;
 	float invI;
 };
+
+struct Friction : entityx::Component<Friction>
+{
+	Friction(float fr1): fr(fr1) {}
+	float fr;
+};
