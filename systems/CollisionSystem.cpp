@@ -5,9 +5,9 @@
 CollisionSystem::CollisionSystem()
 {
 	dispatch[Type::CIRCLE][Type::CIRCLE] = isCollidingCC;
-	dispatch[Type::CIRCLE][Type::POLIGON] = isCollidingCP;
-	dispatch[Type::POLIGON][Type::CIRCLE] = isCollidingPC;
-	dispatch[Type::POLIGON][Type::POLIGON] = isCollidingPP;
+	dispatch[Type::CIRCLE][Type::POLYGON] = isCollidingCP;
+	dispatch[Type::POLYGON][Type::CIRCLE] = isCollidingPC;
+	dispatch[Type::POLYGON][Type::POLYGON] = isCollidingPP;
 }
 
 void CollisionSystem::ResolveCollision(Manifold &m)

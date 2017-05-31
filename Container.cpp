@@ -11,7 +11,7 @@ void Container::addPoly(sf::VertexArray & v, int size)
 	std::vector <sf::Vector2f> n;
 	vertexArrays.push_back(v);
 	for (int i = 0; i <size; ++i)
-	{										//pochwalic sie nowakowskimu ¿e nie ma ifa
+	{										
 		sf::Vector2f a = v[i].position, b = v[(i + 1) % size].position,
 			side = a - b;
 		sf::Transform trans;

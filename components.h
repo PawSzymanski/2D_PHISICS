@@ -121,6 +121,6 @@ struct Type : entityx::Component<Type>
 	int type;
 	enum typ1{
 		CIRCLE, 
-		POLIGON
+		POLYGON
 	};
 };
