@@ -51,8 +51,8 @@ void isCollidingCP(Manifold & man)
 			index = a;
 		}	
 	}
-	sf::Vector2f vertex1 = man.contacts[index],
-		vertex2 = man.contacts[(index + 1) % vertSize];
+	sf::Vector2f vertex1 = verH2->vert[index].position,
+		vertex2 = verH2->vert[(index+1) % vertSize].position;
 
 	sf::Transform rotMatrix;
 	rotMatrix.rotate(rotH2->degree / 57.29577);
@@ -67,6 +67,7 @@ void isCollidingCP(Manifold & man)
 	}
 	float dot1 = dot(centerCir - vertex1, vertex2 - vertex1);
 	float dot2 = dot(centerCir - vertex2, vertex1 - vertex2);
+	std::cout << "dot1:  "<< vertex2.x << " " << vertex2.y << std::endl;
 	if (dot1 < 0)
 	{
 		if (distanceSq(vertex1, centerCir) > (cirH1->r*cirH1->r) )
@@ -78,7 +79,7 @@ void isCollidingCP(Manifold & man)
 	}
 	else if (dot2 < 0)
 	{
-		if (distanceSq(vertex2, centerCir) >(cirH1->r*cirH1->r))
+		if (distanceSq(vertex2, centerCir) > (cirH1->r*cirH1->r))
 			return;
 		man.normal = rotMatrix * vecNormalize(vertex2 - centerCir);
 		man.contactsCount = 1;

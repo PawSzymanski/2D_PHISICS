@@ -1,0 +1,16 @@
+﻿  isCollidingFuns.cpp
+isCollidingFuns.cpp(38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+isCollidingFuns.cpp(58): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Generating code
+  27 of 2390 functions ( 1.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    8 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+MainLoop.obj : warning LNK4020: a type record in 'c:\users\lele\documents\visual studio 2015\projects\2d_phisics\2d_phisics\x64\release\vc140.pdb' is corrupted; some symbols and types may not be accessible from the debugger
+CollisionSystem.obj : warning LNK4020: a type record in 'c:\users\lele\documents\visual studio 2015\projects\2d_phisics\2d_phisics\x64\release\vc140.pdb' is corrupted; some symbols and types may not be accessible from the debugger
+ForcesSystem.obj : warning LNK4020: a type record in 'c:\users\lele\documents\visual studio 2015\projects\2d_phisics\2d_phisics\x64\release\vc140.pdb' is corrupted; some symbols and types may not be accessible from the debugger
+MouseDragSystem.obj : warning LNK4020: a type record in 'c:\users\lele\documents\visual studio 2015\projects\2d_phisics\2d_phisics\x64\release\vc140.pdb' is corrupted; some symbols and types may not be accessible from the debugger
+MovementSystem.obj : warning LNK4020: a type record in 'c:\users\lele\documents\visual studio 2015\projects\2d_phisics\2d_phisics\x64\release\vc140.pdb' is corrupted; some symbols and types may not be accessible from the debugger
+RenderSystem.obj : warning LNK4020: a type record in 'c:\users\lele\documents\visual studio 2015\projects\2d_phisics\2d_phisics\x64\release\vc140.pdb' is corrupted; some symbols and types may not be accessible from the debugger
+  2D_Phisics.vcxproj -> C:\Users\lele\documents\visual studio 2015\Projects\2d_Phisics\x64\Release\2D_Phisics.exe
+  2D_Phisics.vcxproj -> C:\Users\lele\documents\visual studio 2015\Projects\2d_Phisics\x64\Release\2D_Phisics.pdb (Full PDB)
