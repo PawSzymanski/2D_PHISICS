@@ -45,7 +45,7 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 	float force = -velAlongNormal / invMassSum;
 
 	m.force = m.normal * force;
-	std::cout << contactVel.x << " " << contactVel.y << std::endl;
+	//std::cout << contactVel.x << " " << contactVel.y << std::endl;
 	//friction 
 	contactVel -= m.normal * dot(contactVel, m.normal);
 
@@ -84,7 +84,7 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 			ev.emit<ApplyForceEvent>(contact2, m.force, en2);
 			ev.emit<ApplyForceEvent>(contact1, -m.force, en1);
 			
-			std::cout << "tak" << std::endl;
+			//std::cout << "tak" << std::endl;
 		}
 	}
 }
