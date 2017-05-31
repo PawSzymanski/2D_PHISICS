@@ -18,7 +18,7 @@ void RenderSystem::update(entityx::EntityManager & en, entityx::EventManager & e
 	Circle::Handle circ;
 	Line::Handle line;
 	Transform::Handle trans;
-
+	VertexArray::Handle vArray;
 	win.clear(sf::Color::Blue);
 
 	for (auto entity : en.entities_with_components( circ, pos, line, trans ))
@@ -34,6 +34,11 @@ void RenderSystem::update(entityx::EntityManager & en, entityx::EventManager & e
 
 	for(auto entity: en.entities_with_components(line))
 		win.draw(line->line);
+
+	for (auto entity : en.entities_with_components(vArray, trans))
+	{
+		win.draw(vArray->vert, trans->trans);
+	}
 
 	win.display();
 }

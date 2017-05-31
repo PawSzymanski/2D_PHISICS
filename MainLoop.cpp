@@ -1,7 +1,7 @@
 #include "MainLoop.h"
 
 
-MainLoop::MainLoop()
+MainLoop::MainLoop()  
 {
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
@@ -10,8 +10,22 @@ MainLoop::MainLoop()
 	camera.reset(sf::FloatRect(0, 0, 17.5, 10));
 	window.setView(camera);
 
-	createCircle(sf::Vector2f(5, 1), sf::Vector2f(0, 1), 0.5f, sf::Color::Green, 400);
+	createCircle(sf::Vector2f(5, 1), sf::Vector2f(-1, 0), 0.5f, sf::Color::Green, -400);
 	createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 0.5f, sf::Color::Red, 0);
+
+
+	sf::VertexArray newVert(sf::TriangleFan, 3);
+	
+	newVert[0].position = sf::Vector2f(1, 1);
+	newVert[0].color = sf::Color::Green;
+	newVert[1].position = sf::Vector2f(2, 1);
+	newVert[1].color = sf::Color::Green;
+	newVert[2].position = sf::Vector2f(1.5, 2);
+	newVert[2].color = sf::Color::Green;
+
+	vertCont.addPoly(newVert, 3);
+
+	createPolygon(sf::Vector2f(1, 1), sf::Vector2f(0, 0), 0, vertCont.vertexArrays[0]);
 }
 
 MainLoop::~MainLoop()
@@ -105,4 +119,21 @@ void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel, float r, sf::Col
 	en.assign<Mass>(1);
 	en.assign<MOfInertia>(0.5f *r*r);
 	en.assign<Friction>(0.7);
+	en.assign<Type>(Type::CIRCLE);
+}
+void MainLoop::createPolygon(sf::Vector2f pos, sf::Vector2f vel, float AngVel,sf::VertexArray &vertContHelper)
+{
+	auto en = ex.entities.create();
+	en.assign<Rotation>(0);
+	en.assign<Position>(pos);
+	en.assign<LinearVelocity>(vel);
+	en.assign<AngularVelocity>(AngVel);
+	en.assign<Transform>();
+	en.assign<AngularForce>();
+	en.assign<LinearForce>();
+	en.assign<Mass>(1);
+	en.assign<MOfInertia>(5.0f);
+	en.assign<Friction>(0.7);
+	en.assign<VertexArray>(vertContHelper);
+	en.assign<Type>(Type::POLIGON);
 }

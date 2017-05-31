@@ -7,4 +7,7 @@
 #include "Manifold.h"
 #include "AutisticCmath.cpp"
 
-void isColliding(Manifold &man);
+void isCollidingCC(Manifold &man);
+void isCollidingCP(Manifold &man);
+void isCollidingPC(Manifold &man);
+void isCollidingPP(Manifold &man);

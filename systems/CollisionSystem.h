@@ -12,7 +12,7 @@ class CollisionSystem : public entityx::System<CollisionSystem>
 {
 
 public:
-
+	void(*dispatch[2][2])(Manifold& m);
 
 	CollisionSystem();
 

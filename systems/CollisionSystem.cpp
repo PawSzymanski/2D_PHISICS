@@ -4,6 +4,10 @@
 
 CollisionSystem::CollisionSystem()
 {
+	dispatch[Type::CIRCLE][Type::CIRCLE] = isCollidingCC;
+	dispatch[Type::CIRCLE][Type::POLIGON] = isCollidingCP;
+	dispatch[Type::POLIGON][Type::CIRCLE] = isCollidingPC;
+	dispatch[Type::POLIGON][Type::POLIGON] = isCollidingPP;
 }
 
 void CollisionSystem::ResolveCollision(Manifold &m)
@@ -56,18 +60,18 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager & ev, double dt)
 {
 	Position::Handle posH1, posH2;
+	Type::Handle typeH1, typeH2;
 
-
-	for (auto en1 : en.entities_with_components(posH1))
+	for (auto en1 : en.entities_with_components(posH1, typeH1))
 	{
-		for (auto en2 : en.entities_with_components(posH2))
+		for (auto en2 : en.entities_with_components(posH2, typeH2))
 		{
 			if (en1 == en2)
 				continue;
 			
 			Manifold m(en1,en2);
 
-			isColliding(m);
+			dispatch[typeH1->type][typeH2->type](m);
 
 			if (!m.contactsCount)
 				continue;

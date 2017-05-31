@@ -1,7 +1,8 @@
 #include "isCollidingFuns.h"
 
-void isColliding(Manifold &man)
+void isCollidingCC(Manifold &man)
 {
+	std::cout << "CC" << std::endl;
 	Position::Handle posH1 = man.en1.component<Position>(),
 		posH2 = man.en2.component<Position>();
 	Circle::Handle cirH1 = man.en1.component<Circle>(),
@@ -20,3 +21,20 @@ void isColliding(Manifold &man)
 
 	return;
 }
+
+void isCollidingCP(Manifold & man)
+{
+	std::cout << "CP" << std::endl;
+
+
+}
+
+void isCollidingPC(Manifold & man)
+{
+}
+
+void isCollidingPP(Manifold & man)
+{
+}
+
+

@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AutisticCmath.cpp" />
+    <ClCompile Include="Container.cpp" />
     <ClCompile Include="isCollidingFuns.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainLoop.cpp" />
@@ -165,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="AutisticCmath.h" />
     <ClInclude Include="components.h" />
+    <ClInclude Include="Container.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="isCollidingFuns.h" />
     <ClInclude Include="MainLoop.h" />

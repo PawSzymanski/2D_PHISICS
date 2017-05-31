@@ -80,7 +80,7 @@ struct LinearForce : entityx::Component<LinearForce>
 	sf::Vector2f force;
 };
 
-struct AngularForce :entityx::Component<AngularForce>
+struct AngularForce : entityx::Component<AngularForce>
 {
 	AngularForce() : force(0.0f)
 	{}
@@ -106,4 +106,21 @@ struct Friction : entityx::Component<Friction>
 {
 	Friction(float fr1): fr(fr1) {}
 	float fr;
+};
+
+struct VertexArray : entityx::Component<VertexArray>
+{
+	VertexArray(sf::VertexArray & v)
+		:vert(v) {}
+	sf::VertexArray & vert;
+};
+
+struct Type : entityx::Component<Type>
+{
+	Type(int type) : type(type){}
+	int type;
+	enum typ1{
+		CIRCLE, 
+		POLIGON
+	};
 };
