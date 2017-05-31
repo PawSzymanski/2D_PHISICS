@@ -23,6 +23,8 @@ void Container::addPoly(sf::VertexArray & v, int size)
 	}
 
 	normals.push_back(n);
+
+	std::cout << " size :"  <<normals[0].size() << std::endl;
 }
 
 Container::~Container()

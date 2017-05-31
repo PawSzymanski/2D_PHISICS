@@ -32,7 +32,7 @@ public:
 private:
 	void createCircle(sf::Vector2f pos, sf::Vector2f vel, float r, sf::Color col, float);
 
-	void createPolygon(sf::Vector2f pos, sf::Vector2f vel, float AngVel, sf::VertexArray &);
+	void createPolygon(sf::Vector2f pos, sf::Vector2f vel, float AngVel, int polyIndex);
 
 	
 };

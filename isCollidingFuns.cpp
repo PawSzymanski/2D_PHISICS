@@ -2,7 +2,7 @@
 
 void isCollidingCC(Manifold &man)
 {
-	std::cout << "CC" << std::endl;
+	//std::cout << "CC" << std::endl;
 	Position::Handle posH1 = man.en1.component<Position>(),
 		posH2 = man.en2.component<Position>();
 	Circle::Handle cirH1 = man.en1.component<Circle>(),
@@ -24,13 +24,80 @@ void isCollidingCC(Manifold &man)
 
 void isCollidingCP(Manifold & man)
 {
-	std::cout << "CP" << std::endl;
+	//std::cout << "CP" << std::endl;
+	Position::Handle posH1 = man.en1.component<Position>(),
+		 posH2 = man.en2.component<Position>();
+	Circle::Handle cirH1 = man.en1.component<Circle>();
+	VertexArray::Handle verH2 = man.en2.component<VertexArray>();
+	Transform::Handle transH2 = man.en2.component<Transform>();
+	Rotation::Handle rotH2 = man.en2.component<Rotation>();
 
+	sf::Vector2f centerCir =  (transH2->trans.getInverse() * (posH1->pos)) ;
+	int index = 0;
+	float separation = -FLT_MAX;
+	int vertSize = verH2->vert.getVertexCount();
+	
+
+	for (int a = 0; a < vertSize; ++a)
+	{
+		//std::cout << verH2->vert[a].position.x << " "<< verH2->vert[a].position.y<<std::endl;
+		float sepHelp = dot(verH2->normals.at(a), centerCir - verH2->vert[a].position);
+		if (sepHelp > cirH1->r)
+			return;
+		
+		if (sepHelp > separation)
+		{
+			separation = sepHelp;
+			index = a;
+		}	
+	}
+	sf::Vector2f vertex1 = man.contacts[index],
+		vertex2 = man.contacts[(index + 1) % vertSize];
+
+	sf::Transform rotMatrix;
+	rotMatrix.rotate(rotH2->degree / 57.29577);
+
+	if (separation < EPSILON)
+	{
+		man.contactsCount = 1;
+		man.normal = -(rotMatrix * verH2->normals[index]);
+		man.contacts[0] = man.normal * cirH1->r + posH1->pos;
+		man.penetration = cirH1->r;
+		return;
+	}
+	float dot1 = dot(centerCir - vertex1, vertex2 - vertex1);
+	float dot2 = dot(centerCir - vertex2, vertex1 - vertex2);
+	if (dot1 < 0)
+	{
+		if (distanceSq(vertex1, centerCir) > (cirH1->r*cirH1->r) )
+			return;
+		man.normal = rotMatrix * vecNormalize(vertex1 - centerCir);
+		man.contactsCount = 1;
+		man.contacts[0] = rotMatrix * vertex1 + posH2->pos;
+		man.penetration = cirH1->r - separation;
+	}
+	else if (dot2 < 0)
+	{
+		if (distanceSq(vertex2, centerCir) >(cirH1->r*cirH1->r))
+			return;
+		man.normal = rotMatrix * vecNormalize(vertex2 - centerCir);
+		man.contactsCount = 1;
+		man.contacts[0] = rotMatrix * vertex2 + posH2->pos;
+		man.penetration = cirH1->r - separation;
+	}
+	else
+	{
+		man.normal = -(rotMatrix * verH2->normals[index]);
+		man.contactsCount = 1;
+		man.contacts[0] = man.normal * cirH1->r + posH1->pos;
+		man.penetration = cirH1->r - separation;
+	}
 
 }
 
 void isCollidingPC(Manifold & man)
 {
+
 }
 
 void isCollidingPP(Manifold & man)

@@ -3,6 +3,8 @@
 #include <entityx\entityx.h>
 #include <SFML\Graphics.hpp>
 
+
+
 struct Position : public entityx::Component<Position>
 {
 	Position(sf::Vector2f & pos)
@@ -110,9 +112,12 @@ struct Friction : entityx::Component<Friction>
 
 struct VertexArray : entityx::Component<VertexArray>
 {
-	VertexArray(sf::VertexArray & v)
-		:vert(v) {}
+	VertexArray(sf::VertexArray & v, std::vector <sf::Vector2f> &n)
+		:vert(v), normals(n) {
+		std::cout << "component check: " << normals.size() << std::endl;
+	}
 	sf::VertexArray & vert;
+	std::vector <sf::Vector2f> & normals;
 };
 
 struct Type : entityx::Component<Type>
