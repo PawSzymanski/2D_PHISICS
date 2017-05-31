@@ -67,7 +67,7 @@ void isCollidingCP(Manifold & man)
 	}
 	float dot1 = dot(centerCir - vertex1, vertex2 - vertex1);
 	float dot2 = dot(centerCir - vertex2, vertex1 - vertex2);
-	std::cout << "dot1:  "<< vertex2.x << " " << vertex2.y << std::endl;
+	std::cout << "dot1:  "<< centerCir.x << " " << centerCir.y << std::endl;
 	if (dot1 < 0)
 	{
 		if (distanceSq(vertex1, centerCir) > (cirH1->r*cirH1->r) )

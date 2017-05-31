@@ -83,6 +83,11 @@ void MainLoop::loop()
 			//{
 			//	createCircle(mouse_posf, sf::Vector2f(0, 0), 1, 4, 0.5, 0.05, 0.07);
 			//}
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+			{
+				while (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				{ }
+			}
 
 		}
 		time += clock.restart();
