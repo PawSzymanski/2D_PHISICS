@@ -10,7 +10,7 @@ MainLoop::MainLoop()
 	camera.reset(sf::FloatRect(0, 0, 17.5, 10));
 	window.setView(camera);
 
-	createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(-1, 0), 5, 0.5f, sf::Color::Green, 0);
+	createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(-1, 0), 1, 0.5f, sf::Color::Green, 0);
 	createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 0, 0.5f, sf::Color::Red, 0);
 
 
@@ -136,7 +136,7 @@ void MainLoop::createPolygon(sf::Vector2f pos, sf::Vector2f vel, float AngVel, i
 	en.assign<Transform>();
 	en.assign<AngularForce>();
 	en.assign<LinearForce>();
-	en.assign<Mass>(100);
+	en.assign<Mass>(1);
 	en.assign<MOfInertia>(1.0f);
 	en.assign<Friction>(0.7);
 	en.assign<VertexArray>(vertCont.vertexArrays[polyIndex], vertCont.normals[polyIndex]);

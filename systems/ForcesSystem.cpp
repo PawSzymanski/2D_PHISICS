@@ -24,7 +24,7 @@ void ForcesSystem::update(entityx::EntityManager & en, entityx::EventManager & e
 	for (auto entity : en.entities_with_components(LinVelH, AngVelH, LinForceH, AngForceH, inerH, massH))
 	{
 		LinVelH->vel += LinForceH->force * massH->invMass;
-		AngVelH->degree  = 0; //+= AngForceH->force * 57.29577f * inerH->invI;; // from radians to degrees;
+		AngVelH->degree  += AngForceH->force * 57.29577f * inerH->invI;; // from radians to degrees;
 		LinForceH->force = sf::Vector2f(0, 0);
 		AngForceH->force = 0.0f;
 

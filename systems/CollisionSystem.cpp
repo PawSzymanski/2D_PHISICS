@@ -39,30 +39,32 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 
 	float contactVel = dot(relativeVel, m.normal);
 	
+	//std::cout << vecLenght(relativeVel) << " " << vecLenght(m.normal) << std:: endl;
 	if (contactVel > 0)
 		return;
 
 	float contact1XNormal = crossVV(contact1, m.normal);
 	float contact2XNormal = crossVV(contact2, m.normal);
-	float invMassSum =  massH1->invMass + massH2->invMass + sqr(contact1XNormal) *inertH1->invI + sqr(contact2XNormal) *inertH2->invI;
+	float invMassSum = massH1->invMass + massH2->invMass + sqr(contact1XNormal) *inertH1->invI + sqr(contact2XNormal) *inertH2->invI;
 
 	float force = -(1.0f + restitution) * contactVel;
 	force /= invMassSum;
 	//force/= m.contactsCount;
 
 	m.force =  m.normal * force;
+	//std::cout << vecLenght(m.force) * invMassSum << std::endl;
 	//m.force /= 2.0f;
 	
 	//std::cout << contactVel.x << " " << contactVel.y << std::endl;
 	//friction 
-	//relativeVel -= m.normal * dot(relativeVel, m.normal);
+	relativeVel -= m.normal * dot(relativeVel, m.normal);
 
 	////from contact
-	//relativeVel *= -(frH1->fr + frH2->fr) / 2;
+	relativeVel *= -(frH1->fr + frH2->fr) / 2;
 
-	//relativeVel /= invMassSum;
+	relativeVel /= invMassSum;
 
-	//m.force += relativeVel;
+	m.force += relativeVel;
 
 	//}
 }
@@ -71,15 +73,28 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 {
 	Position::Handle posH1, posH2;
 	Type::Handle typeH1, typeH2;
+	LinearForce::Handle linFH1, linFH2;
 
-	for (auto en1 : en.entities_with_components(posH1, typeH1))
+
+	entityx::Entity * ens = new entityx::Entity[en.size()];
+	int entitiesCount = 0;
+
+	for (auto en : en.entities_with_components(posH1, typeH1, linFH1))
 	{
-		for (auto en2 : en.entities_with_components(posH2, typeH2))
-		{
-			if (en1 == en2)
-				continue;
-			
-			Manifold m(en1,en2);
+		ens[entitiesCount] = en;
+		++entitiesCount;
+	}
+
+	for(int i=0; i<entitiesCount; ++i)
+	{
+		for (int j=i+1; j<entitiesCount; ++j)
+		{			
+			Manifold m(ens[i],ens[j]);
+
+			typeH1 = ens[i].component<Type>();
+			typeH2 = ens[j].component<Type>();
+			posH1 = ens[i].component<Position>();
+			posH2 = ens[j].component<Position>();
 
 			dispatch[typeH1->type][typeH2->type](m);
 
@@ -91,8 +106,8 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 			sf::Vector2f contact1 = m.contacts[0] - posH1->pos,
 				contact2 = m.contacts[0] - posH2->pos;
 			
-			ev.emit<ApplyForceEvent>(contact2, m.force, en2);
-			ev.emit<ApplyForceEvent>(contact1, -m.force, en1);
+			ev.emit<ApplyForceEvent>(contact2, m.force, ens[j]);
+			ev.emit<ApplyForceEvent>(contact1, -m.force, ens[i]);
 			
 			std::cout << "tak: " <<m.penetration<< std::endl;
 		}
