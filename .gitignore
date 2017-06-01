@@ -344,4 +344,8 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
+*.vcxproj
+*.VC.db
+*.vcxproj.filters
+
 # End of https://www.gitignore.io/api/c++,windows,visualstudio
