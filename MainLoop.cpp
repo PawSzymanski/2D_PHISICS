@@ -10,18 +10,18 @@ MainLoop::MainLoop()
 	camera.reset(sf::FloatRect(0, 0, 17.5, 10));
 	window.setView(camera);
 
-	createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(-1, 0), 0.5f, sf::Color::Green, 0);
-	//createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 0.5f, sf::Color::Red, 0);
+	createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(-1, 0), 5, 0.5f, sf::Color::Green, 0);
+	createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 0, 0.5f, sf::Color::Red, 0);
 
 
 	sf::VertexArray newVert(sf::TriangleFan, 3);
 	
 	newVert[0].position = sf::Vector2f(-0.5, -0.5);
-	newVert[0].color = sf::Color::Green;
+	newVert[0].color = sf::Color::Red;
 	newVert[1].position = sf::Vector2f(0.5, -0.5);
-	newVert[1].color = sf::Color::Green;
+	newVert[1].color = sf::Color::Red;
 	newVert[2].position = sf::Vector2f(0, 0.5);
-	newVert[2].color = sf::Color::Green;
+	newVert[2].color = sf::Color::Red;
 
 	vertCont.addPoly(newVert, 3);
 
@@ -109,7 +109,7 @@ void MainLoop::loop()
 	}
 }
 
-void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel, float r, sf::Color col, float AngVel)
+void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel,float mass, float r, sf::Color col, float AngVel)
 {
 	auto en = ex.entities.create();
 	en.assign<Position>(pos);
@@ -121,8 +121,8 @@ void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel, float r, sf::Col
 	en.assign<Transform>();
 	en.assign<AngularForce>();
 	en.assign<LinearForce>();
-	en.assign<Mass>(1);
-	en.assign<MOfInertia>(0.5f *r*r);
+	en.assign<Mass>(mass);
+	en.assign<MOfInertia>(0.5f* mass *r*r);
 	en.assign<Friction>(0.7);
 	en.assign<Type>(Type::CIRCLE);
 }
@@ -136,8 +136,8 @@ void MainLoop::createPolygon(sf::Vector2f pos, sf::Vector2f vel, float AngVel, i
 	en.assign<Transform>();
 	en.assign<AngularForce>();
 	en.assign<LinearForce>();
-	en.assign<Mass>(1);
-	en.assign<MOfInertia>(5.0f);
+	en.assign<Mass>(100);
+	en.assign<MOfInertia>(1.0f);
 	en.assign<Friction>(0.7);
 	en.assign<VertexArray>(vertCont.vertexArrays[polyIndex], vertCont.normals[polyIndex]);
 	en.assign<Type>(Type::POLYGON);

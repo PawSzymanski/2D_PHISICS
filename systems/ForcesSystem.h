@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include "../Events.h"
 #include "../components.h"
+#include "../AutisticCmath.h"
 
 #define CROSS(a,b) (a.x * b.y - a.y * b.x)
 

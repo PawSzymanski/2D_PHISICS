@@ -19,42 +19,52 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 	MOfInertia::Handle inertH1 = m.en1.component<MOfInertia>(), inertH2 = m.en2.component<MOfInertia>();
 	Friction::Handle frH1 = m.en1.component<Friction>(), frH2 = m.en2.component<Friction>();
 
-	float invMassSum = massH1->invMass + massH1->invMass;
-	if (equal(invMassSum, 0))
+	float restitution = 0.5f;
+
+	if (equal(massH1->invMass + massH2->invMass, 0))
 	{
 		velH1->vel = sf::Vector2f(0, 0);
 		velH2->vel = sf::Vector2f(0, 0);
 		return;
 	}
 
+	// for(int i=0; i<m.contantCount ; ++i)
+	//{
+
 	sf::Vector2f contact1 = m.contacts[0] - posH1->pos,
 		contact2 = m.contacts[0] - posH2->pos;
 
-	sf::Vector2f contactVel = velH2->vel + crossSV(angvelH2->radians(), contact2) -
+	sf::Vector2f relativeVel = velH2->vel + crossSV(angvelH2->radians(), contact2) -
 		velH1->vel - crossSV(angvelH1->radians(), contact1);
 
-	float velAlongNormal = dot(contactVel, m.normal);
-	if (velAlongNormal > 0)
+	float contactVel = dot(relativeVel, m.normal);
+	
+	if (contactVel > 0)
 		return;
 
 	float contact1XNormal = crossVV(contact1, m.normal);
 	float contact2XNormal = crossVV(contact2, m.normal);
+	float invMassSum =  massH1->invMass + massH2->invMass + sqr(contact1XNormal) *inertH1->invI + sqr(contact2XNormal) *inertH2->invI;
 
-	invMassSum += sqr(contact1XNormal) *inertH1->invI + sqr(contact2XNormal) *inertH2->invI;
+	float force = -(1.0f + restitution) * contactVel;
+	force /= invMassSum;
+	//force/= m.contactsCount;
 
-	float force = -velAlongNormal / invMassSum;
-
-	m.force = m.normal * force;
+	m.force =  m.normal * force;
+	//m.force /= 2.0f;
+	
 	//std::cout << contactVel.x << " " << contactVel.y << std::endl;
 	//friction 
-	contactVel -= m.normal * dot(contactVel, m.normal);
+	//relativeVel -= m.normal * dot(relativeVel, m.normal);
 
-	//from contact
-	contactVel *= -(frH1->fr + frH2->fr) / 2;
+	////from contact
+	//relativeVel *= -(frH1->fr + frH2->fr) / 2;
 
-	contactVel /= invMassSum;
+	//relativeVel /= invMassSum;
 
-	m.force += contactVel;
+	//m.force += relativeVel;
+
+	//}
 }
 
 void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager & ev, double dt)
@@ -84,7 +94,7 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 			ev.emit<ApplyForceEvent>(contact2, m.force, en2);
 			ev.emit<ApplyForceEvent>(contact1, -m.force, en1);
 			
-			//std::cout << "tak" << std::endl;
+			std::cout << "tak: " <<m.penetration<< std::endl;
 		}
 	}
 }

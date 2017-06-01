@@ -60,8 +60,9 @@ void isCollidingCP(Manifold & man)
 
 	if (separation < EPSILON)
 	{
+		std::cout << "ŒRODEK" << std::endl;
 		man.contactsCount = 1;
-		man.normal = -(rotMatrix * verH2->normals[index]);
+		man.normal = rotMatrix * verH2->normals[index];
 		man.contacts[0] = man.normal * cirH1->r + posH1->pos;
 		man.penetration = cirH1->r;
 		return;
@@ -71,6 +72,7 @@ void isCollidingCP(Manifold & man)
 	//std::cout << "dot1:  "<< centerCir.x << " " << centerCir.y << std::endl;
 	if (dot1 < 0)
 	{
+		std::cout << "V1" << std::endl;
 		if (distanceSq(vertex1, centerCir) > (cirH1->r*cirH1->r) )
 			return;
 		man.normal = rotMatrix * vecNormalize(vertex1 - centerCir);
@@ -80,6 +82,7 @@ void isCollidingCP(Manifold & man)
 	}
 	else if (dot2 < 0)
 	{
+		std::cout << "V2" << std::endl;
 		if (distanceSq(vertex2, centerCir) > (cirH1->r*cirH1->r))
 			return;
 		man.normal = rotMatrix * vecNormalize(vertex2 - centerCir);
@@ -89,10 +92,13 @@ void isCollidingCP(Manifold & man)
 	}
 	else
 	{
+		std::cout << "BOK" << std::endl;
 		man.normal = -(rotMatrix * verH2->normals[index]);
 		man.contactsCount = 1;
 		man.contacts[0] = man.normal * cirH1->r + posH1->pos;
 		man.penetration = cirH1->r - separation;
+
+		std::cout << "normal: " << man.normal.x << " " <<man.normal.y << std::endl;
 	}
 
 }

@@ -21,6 +21,7 @@ void MouseDragSystem::update(entityx::EntityManager & en, entityx::EventManager 
 		sf::Vector2f impulse = lineH->line[1].position - lineH->line[0].position;
 		//sf::Vector2f point = click_pos + impulse;
 		//click_pos = obj_trans->trans * click_pos;
+		impulse /= 10.0f;
 	
 		sf::Transform t;
 		sf::Vector2f p = t.rotate(rot->degree) * click_pos;
