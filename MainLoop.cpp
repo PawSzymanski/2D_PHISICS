@@ -129,7 +129,7 @@ void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel,float mass, float
 void MainLoop::createPolygon(sf::Vector2f pos, sf::Vector2f vel, float AngVel, int polyIndex)
 {
 	auto en = ex.entities.create();
-	en.assign<Rotation>(0);
+	en.assign<Rotation>(180);
 	en.assign<Position>(pos);
 	en.assign<LinearVelocity>(vel);
 	en.assign<AngularVelocity>(AngVel);
