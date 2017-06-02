@@ -32,13 +32,13 @@ void RenderSystem::update(entityx::EntityManager & en, entityx::EventManager & e
 		win.draw(line->line, trans->trans);
 	}
 
-	for(auto entity: en.entities_with_components(line))
-		win.draw(line->line);
-
 	for (auto entity : en.entities_with_components(vArray, trans))
 	{
 		win.draw(vArray->vert, trans->trans);
 	}
+
+	for (auto entity : en.entities_with_components(line))
+		win.draw(line->line);
 
 	win.display();
 }

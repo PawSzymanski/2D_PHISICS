@@ -33,7 +33,7 @@ void MouseDragSystem::update(entityx::EntityManager & en, entityx::EventManager 
 
 	if (!line_started && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
-		for (auto entity : en.entities_with_components(pos, circ, obj_trans, linvel, angvel, rot))
+		for (auto entity : en.entities_with_components(circ, obj_trans, rot))
 		{
 			//std::cout << pos->pos.x << " " << pos->pos.y << " ---- " << win.mapPixelToCoords(sf::Mouse::getPosition(), camera).x << " " << win.mapPixelToCoords(sf::Mouse::getPosition(),camera).y << std::endl;
 			click_pos = win.mapPixelToCoords(sf::Mouse::getPosition() - win.getPosition() - sf::Vector2i(10,30),camera) ;
@@ -44,7 +44,32 @@ void MouseDragSystem::update(entityx::EntityManager & en, entityx::EventManager 
 				lineH = line.assign<Line>(sf::Vector2f(0,0), sf::Vector2f(0,0), sf::Color::Magenta);
 				line_started = true;
 				this->en = entity;
-				break;
+				return;
+			}
+		}
+
+
+		for (auto entity : en.entities_with_components(vert, obj_trans, rot))
+		{
+			//std::cout << pos->pos.x << " " << pos->pos.y << " ---- " << win.mapPixelToCoords(sf::Mouse::getPosition(), camera).x << " " << win.mapPixelToCoords(sf::Mouse::getPosition(),camera).y << std::endl;
+			click_pos = win.mapPixelToCoords(sf::Mouse::getPosition() - win.getPosition() - sf::Vector2i(10, 30), camera);
+			click_pos = obj_trans->trans.getInverse() * click_pos;
+
+			float max_sep = -FLT_MAX;
+			int vertCount = vert->vert.getVertexCount();
+			for (int i=0; i< vertCount; ++i)
+			{
+				float sep = dot(vert->normals.at(i), click_pos - vert->vert[i].position);
+				max_sep = (sep > max_sep) ? sep : max_sep;
+			}
+
+			if (max_sep < 0.0f)
+			{
+				line = en.create();
+				lineH = line.assign<Line>(sf::Vector2f(0, 0), sf::Vector2f(0, 0), sf::Color::Magenta);
+				line_started = true;
+				this->en = entity;
+				return;
 			}
 		}
 	}

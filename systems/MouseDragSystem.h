@@ -9,11 +9,9 @@
 class MouseDragSystem : public entityx::System<MouseDragSystem>
 {
 	entityx::Entity line, en;
-	LinearVelocity::Handle linvel;
-	AngularVelocity::Handle angvel;
-	Position::Handle pos;
 	Rotation::Handle rot;
 	Circle::Handle circ;
+	VertexArray::Handle vert;
 	Line::Handle lineH;
 	Transform::Handle obj_trans;
 	sf::Vector2f click_pos;
