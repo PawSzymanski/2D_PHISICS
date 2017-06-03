@@ -111,8 +111,75 @@ void isCollidingPC(Manifold & man)
 
 }
 
+
+
+float leastPenetration(VertexArray::Handle verH1, sf::Vector2f point, int &side)
+{
+	int verCount = verH1->vert.getVertexCount();
+	float max_sep = -FLT_MAX;
+	for (int i = 0; i < verCount; ++i)
+	{
+		float sep = dot(verH1->normals.at(i), point - verH1->vert[i].position);
+		max_sep = (sep > max_sep) ? sep : max_sep;
+		side = (sep > max_sep) ? i : side;
+	}
+
+	return -max_sep;
+}
+
+
+
+
 void isCollidingPP(Manifold & man)
 {
+
+	Position::Handle posH1 = man.en1.component<Position>(),
+		posH2 = man.en2.component<Position>();
+	VertexArray::Handle verH1 = man.en1.component<VertexArray>(),
+		verH2 = man.en2.component<VertexArray>();
+	Transform::Handle transH1 = man.en1.component<Transform>(),
+		transH2 = man.en2.component<Transform>();
+	Rotation::Handle  rotH1 = man.en1.component<Rotation>(),
+		rotH2 = man.en2.component<Rotation>();
+	sf::Transform ROTMATRIX1, ROTMATRIX2;
+	ROTMATRIX1.rotate(rotH1->degree);
+	ROTMATRIX2.rotate(rotH2->degree);
+	int side=0;
+  //cz (2) jest w obiekcie (1)
+	for (int i = 0; i < verH2->vert.getVertexCount(); ++i)
+	{
+		sf::Vector2f positionOfVer = verH2->vert[i].position;
+		positionOfVer = transH1->trans.getInverse() *(transH2->trans * positionOfVer);	
+		float penetration = leastPenetration(verH1, positionOfVer, side);		
+		//std::cout << penetration << std::endl;
+		if (penetration > 0)
+		{
+			man.contactsCount = 1;
+			man.normal = ROTMATRIX1 * verH1->normals[side];
+			man.contacts[0] = transH1->trans * positionOfVer;
+			man.penetration = penetration;
+			std::cout << "111111" << std::endl;
+			return;
+		}
+	}
+	//cz (2) jest w obiekcie (1)
+	for (int i = 0; i < verH1->vert.getVertexCount(); ++i)
+	{
+		sf::Vector2f positionOfVer = verH1->vert[i].position;
+		positionOfVer = transH2->trans.getInverse() *(transH1->trans * positionOfVer);
+		float penetration = leastPenetration(verH2, positionOfVer, side);
+		//std::cout << penetration << std::endl;
+		if (penetration > 0)
+		{
+			man.contactsCount = 1;
+			man.normal = ROTMATRIX2 * verH2->normals[side];
+			man.contacts[0] = transH2->trans * positionOfVer;
+			man.penetration = penetration;
+			std::cout << "2222222" << std::endl;
+			return;
+		}
+	}
+	
 }
 
 

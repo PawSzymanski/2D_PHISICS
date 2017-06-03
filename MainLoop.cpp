@@ -10,8 +10,8 @@ MainLoop::MainLoop()
 	camera.reset(sf::FloatRect(0, 0, 17.5, 10));
 	window.setView(camera);
 
-	createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(-1, 0), 1, 0.5f, sf::Color::Green, 0);
-	createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 0, 0.5f, sf::Color::Red, 0);
+	//createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(-1, 0), 1, 0.5f, sf::Color::Green, 0);
+	//createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 0, 0.5f, sf::Color::Red, 0);
 
 
 	sf::VertexArray newVert(sf::TriangleFan, 3);
@@ -25,7 +25,8 @@ MainLoop::MainLoop()
 
 	vertCont.addPoly(newVert, 3);
 
-	createPolygon(sf::Vector2f(7, 5), sf::Vector2f(0, 0), 0, 0);
+	createPolygon(sf::Vector2f(7, 5), sf::Vector2f(-1, 0), 0, 0);
+	createPolygon(sf::Vector2f(5, 4.7), sf::Vector2f(0, 0), 0, 0);
 }
 
 MainLoop::~MainLoop()
