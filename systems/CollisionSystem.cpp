@@ -109,7 +109,7 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 			ev.emit<ApplyForceEvent>(contact2, m.force, ens[j]);
 			ev.emit<ApplyForceEvent>(contact1, -m.force, ens[i]);
 			
-			std::cout << "tak: " <<m.penetration<< std::endl;
+			//std::cout << "tak: " <<m.penetration<< std::endl;
 		}
 	}
 }

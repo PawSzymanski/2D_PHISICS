@@ -25,8 +25,8 @@ MainLoop::MainLoop()
 
 	vertCont.addPoly(newVert, 3);
 
-	createPolygon(sf::Vector2f(7, 5), sf::Vector2f(-1, 0), 0, 0);
-	createPolygon(sf::Vector2f(5, 4.7), sf::Vector2f(0, 0), 0, 0);
+	createPolygon(sf::Vector2f(5, 6.7), sf::Vector2f(1, 0), 0, 0);
+	createPolygon(sf::Vector2f(7, 7), sf::Vector2f(0, 0), 0, 0);
 }
 
 MainLoop::~MainLoop()

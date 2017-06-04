@@ -120,14 +120,13 @@ float leastPenetration(VertexArray::Handle verH1, sf::Vector2f point, int &side)
 	for (int i = 0; i < verCount; ++i)
 	{
 		float sep = dot(verH1->normals.at(i), point - verH1->vert[i].position);
+		side = (sep > max_sep) ? i: side;
 		max_sep = (sep > max_sep) ? sep : max_sep;
-		side = (sep > max_sep) ? i : side;
+		//side = (sep > max_sep) ? i : side;
 	}
-
+	std::cout << side << std::endl;
 	return -max_sep;
 }
-
-
 
 
 void isCollidingPP(Manifold & man)
@@ -158,11 +157,11 @@ void isCollidingPP(Manifold & man)
 			man.normal = ROTMATRIX1 * verH1->normals[side];
 			man.contacts[0] = transH1->trans * positionOfVer;
 			man.penetration = penetration;
-			std::cout << "111111" << std::endl;
+			//std::cout << "111111" << (side + 1) % verH1->vert.getVertexCount() << man.contacts[0].x << "  " << man.contacts[0].y << std::endl;
 			return;
 		}
 	}
-	//cz (2) jest w obiekcie (1)
+	//cz (1) jest w obiekcie (2)
 	for (int i = 0; i < verH1->vert.getVertexCount(); ++i)
 	{
 		sf::Vector2f positionOfVer = verH1->vert[i].position;
@@ -172,10 +171,10 @@ void isCollidingPP(Manifold & man)
 		if (penetration > 0)
 		{
 			man.contactsCount = 1;
-			man.normal = ROTMATRIX2 * verH2->normals[side];
+			man.normal = ROTMATRIX2 * -verH2->normals[side];
 			man.contacts[0] = transH2->trans * positionOfVer;
 			man.penetration = penetration;
-			std::cout << "2222222" << std::endl;
+			//std::cout << "2222222  " << (side + 1) % verH1->vert.getVertexCount() << " " <<man.contacts[0].x << "  "<< man.contacts[0].y <<std::endl;
 			return;
 		}
 	}
