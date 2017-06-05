@@ -97,7 +97,7 @@ void isCollidingCP(Manifold & man)
 		std::cout << "BOK" << std::endl;
 		man.normal = -(rotMatrix * verH2->normals[index]);
 		man.contactsCount = 1;
-		man.contacts[0] = -(man.normal * cirH1->r) + posH1->pos;
+		man.contacts[0] = man.normal * cirH1->r + posH1->pos;
 		man.penetration = cirH1->r - separation;
 
 		//std::cout << "normal: " << man.normal.x << " " <<man.normal.y << std::endl;

@@ -56,13 +56,24 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 	
 	//std::cout << contactVel.x << " " << contactVel.y << std::endl;
 	//friction 
-	relativeVel -= m.normal * dot(relativeVel, m.normal);
+	sf::Vector2f t =( relativeVel - ( m.normal * dot(relativeVel, m.normal)));
+	t= vecNormalize(t);
+	//std::cout << "friction: " << t.x <<" "<<t.y<< std::endl;
 
-	////from contact
-	relativeVel *= (frH1->fr + frH2->fr) / 4;
-	relativeVel /= invMassSum;
+	float jt = -dot(relativeVel, t);
 
-	m.force += relativeVel;
+	jt /= invMassSum;
+	
+	if (equal(jt, 0.0f))
+		return;
+	sf::Vector2f frictionImpulse;
+
+	if(abs_f(jt) < force * 0.7)
+		frictionImpulse = t *jt;
+	else
+		frictionImpulse = t * -force * 0.5f;
+
+	m.force += frictionImpulse;
 
 	//}
 }
@@ -85,7 +96,7 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 
 	for(int i=0; i<entitiesCount; ++i)
 	{
-		//ev.emit<ApplyForceEvent>(sf::Vector2f(0, 0), sf::Vector2f(0, 0.098), ens[i]); //GRAWITEJSZYN
+		ev.emit<ApplyForceEvent>(sf::Vector2f(0, 0), sf::Vector2f(0, 0.098), ens[i]); //GRAWITEJSZYN
 
 		for (int j=i+1; j<entitiesCount; ++j)
 		{			
