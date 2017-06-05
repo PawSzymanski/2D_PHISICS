@@ -30,9 +30,9 @@ public:
 	void render();
 
 private:
-	void createCircle(sf::Vector2f pos, sf::Vector2f vel, float mass, float r, sf::Color col, float);
+	void createCircle(sf::Vector2f pos, sf::Vector2f vel, float mass, sf::Color col, float r);
 
-	void createPolygon(sf::Vector2f pos, sf::Vector2f vel, float AngVel, int polyIndex);
+	void createPolygon(sf::Vector2f pos, sf::Vector2f vel, float rotation, int mass, int polyIndex);
 
 	
 };

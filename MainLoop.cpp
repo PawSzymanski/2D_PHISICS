@@ -10,24 +10,39 @@ MainLoop::MainLoop()
 	camera.reset(sf::FloatRect(0, 0, 17.5, 10));
 	window.setView(camera);
 
-	//createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(-1, 0), 1, 0.5f, sf::Color::Green, 0);
+	sf::VertexArray triangle(sf::TriangleFan, 3);
 	
-	createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 1, 0.5f, sf::Color::Red, 0);
+	triangle[0].position = sf::Vector2f(-0.5, -0.5);
+	triangle[0].color = sf::Color::Red;
+	triangle[1].position = sf::Vector2f(0.5, -0.5);
+	triangle[1].color = sf::Color::Red;
+	triangle[2].position = sf::Vector2f(0, 0.5);
+	triangle[2].color = sf::Color::Red;
+
+	sf::VertexArray long_rect(sf::TriangleFan, 4);
+
+	long_rect[0].position = sf::Vector2f(-8.5, -0.2);
+	long_rect[0].color = sf::Color::Black;
+	long_rect[1].position = sf::Vector2f(8.5, -0.2);
+	long_rect[1].color = sf::Color::Black;
+	long_rect[2].position = sf::Vector2f(8.5, 0.2);
+	long_rect[2].color = sf::Color::Black;
+	long_rect[3].position = sf::Vector2f(-8.5, 0.2);
+	long_rect[3].color = sf::Color::Black;
+
+	vertCont.addPoly(triangle, 3);
+	vertCont.addPoly(long_rect, 4);
 
 
-	sf::VertexArray newVert(sf::TriangleFan, 3);
-	
-	newVert[0].position = sf::Vector2f(-0.5, -0.5);
-	newVert[0].color = sf::Color::Red;
-	newVert[1].position = sf::Vector2f(0.5, -0.5);
-	newVert[1].color = sf::Color::Red;
-	newVert[2].position = sf::Vector2f(0, 0.5);
-	newVert[2].color = sf::Color::Red;
+	createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(0, 0), 1, sf::Color::Green, 0.5f);
+	//createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 1, sf::Color::Green, 0.5f);
 
-	vertCont.addPoly(newVert, 3);
+	//createPolygon(sf::Vector2f(5, 6.7), sf::Vector2f(0, 0), 0, 1, 0);
+	//createPolygon(sf::Vector2f(7, 7), sf::Vector2f(0, 0), 0, 1, 0);
 
-	createPolygon(sf::Vector2f(5, 6.7), sf::Vector2f(1, 0), 0, 0);
-	createPolygon(sf::Vector2f(7, 7), sf::Vector2f(0, 0), 0, 0);
+	createPolygon(sf::Vector2f(8.75, 9.5), sf::Vector2f(0, 0), 0, 0, 1);
+	createPolygon(sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
+	createPolygon(sf::Vector2f(17, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
 }
 
 MainLoop::~MainLoop()
@@ -111,13 +126,13 @@ void MainLoop::loop()
 	}
 }
 
-void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel,float mass, float r, sf::Color col, float AngVel)
+void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel, float mass, sf::Color col, float r)
 {
 	auto en = ex.entities.create();
 	en.assign<Position>(pos);
 	en.assign<Rotation>(0);
 	en.assign<LinearVelocity>(vel);
-	en.assign<AngularVelocity>(AngVel);
+	en.assign<AngularVelocity>(0);
 	en.assign<Circle>(r, col);
 	en.assign<Line>(sf::Vector2f(0,0),sf::Vector2f(r, 0), sf::Color::Black);
 	en.assign<Transform>();
@@ -128,18 +143,18 @@ void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel,float mass, float
 	en.assign<Friction>(0.7);
 	en.assign<Type>(Type::CIRCLE);
 }
-void MainLoop::createPolygon(sf::Vector2f pos, sf::Vector2f vel, float AngVel, int polyIndex)
+void MainLoop::createPolygon(sf::Vector2f pos, sf::Vector2f vel, float rotation, int mass, int polyIndex)
 {
 	auto en = ex.entities.create();
-	en.assign<Rotation>(180);
+	en.assign<Rotation>(rotation);
 	en.assign<Position>(pos);
 	en.assign<LinearVelocity>(vel);
-	en.assign<AngularVelocity>(AngVel);
+	en.assign<AngularVelocity>(0);
 	en.assign<Transform>();
 	en.assign<AngularForce>();
 	en.assign<LinearForce>();
-	en.assign<Mass>(1);
-	en.assign<MOfInertia>(1.0f);
+	en.assign<Mass>(mass);
+	en.assign<MOfInertia>(mass);
 	en.assign<Friction>(0.7);
 	en.assign<VertexArray>(vertCont.vertexArrays[polyIndex], vertCont.normals[polyIndex]);
 	en.assign<Type>(Type::POLYGON);
