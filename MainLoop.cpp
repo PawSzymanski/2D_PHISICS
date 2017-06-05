@@ -40,7 +40,7 @@ MainLoop::MainLoop()
 	//createPolygon(sf::Vector2f(5, 6.7), sf::Vector2f(0, 0), 0, 1, 0);
 	//createPolygon(sf::Vector2f(7, 7), sf::Vector2f(0, 0), 0, 1, 0);
 
-	createPolygon(sf::Vector2f(8.75, 9.5), sf::Vector2f(0, 0), 0, 0, 1);
+	createPolygon(sf::Vector2f(8.75, 10.15), sf::Vector2f(0, 0), 0, 0, 1);
 	createPolygon(sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
 	createPolygon(sf::Vector2f(17, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
 }

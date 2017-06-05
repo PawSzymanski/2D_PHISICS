@@ -53,15 +53,15 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 
 	m.force =  m.normal * force;
 	//std::cout << vecLenght(m.force) * invMassSum << std::endl;
-	
+
 	//std::cout << contactVel.x << " " << contactVel.y << std::endl;
 	//friction 
-	relativeVel -= m.normal * dot(relativeVel, m.normal);
+	relativeVel -= m.normal * 0.5f *dot(relativeVel, m.normal);
 
 	////from contact
-	relativeVel *= (frH1->fr + frH2->fr) / 4;
+	relativeVel *= -(frH1->fr + frH2->fr) / 2;
 	relativeVel /= invMassSum;
-
+	std::cout << m.contacts[0].x << " " << m.contacts[0].y << std::endl;
 	m.force += relativeVel;
 
 	//}
