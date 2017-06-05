@@ -123,7 +123,7 @@ float leastPenetration(VertexArray::Handle verH1, sf::Vector2f point, int &side)
 		max_sep = (sep > max_sep) ? sep : max_sep;
 		//side = (sep > max_sep) ? i : side;
 	}
-	std::cout << side << std::endl;
+	//std::cout << side << std::endl;
 	return -max_sep;
 }
 
