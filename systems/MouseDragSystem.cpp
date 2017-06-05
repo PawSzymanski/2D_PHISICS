@@ -7,6 +7,7 @@ MouseDragSystem::MouseDragSystem(sf::RenderWindow & win, sf::View & camera)
 
 MouseDragSystem::~MouseDragSystem()
 {
+
 }
 
 void MouseDragSystem::update(entityx::EntityManager & en, entityx::EventManager & ev, double dt)

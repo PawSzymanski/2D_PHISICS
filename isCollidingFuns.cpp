@@ -18,7 +18,6 @@ void isCollidingCC(Manifold &man)
 	man.contacts[man.contactsCount] = posH1->pos + man.normal*cirH1->r;
 	++man.contactsCount;
 	man.penetration = sumR - dist;
-
 	return;
 }
 
@@ -131,7 +130,6 @@ float leastPenetration(VertexArray::Handle verH1, sf::Vector2f point, int &side)
 
 void isCollidingPP(Manifold & man)
 {
-
 	Position::Handle posH1 = man.en1.component<Position>(),
 		posH2 = man.en2.component<Position>();
 	VertexArray::Handle verH1 = man.en1.component<VertexArray>(),
@@ -144,7 +142,7 @@ void isCollidingPP(Manifold & man)
 	ROTMATRIX1.rotate(rotH1->degree);
 	ROTMATRIX2.rotate(rotH2->degree);
 	int side=0;
-  //cz (2) jest w obiekcie (1)
+  //czy (2) jest w obiekcie (1)
 	for (int i = 0; i < verH2->vert.getVertexCount(); ++i)
 	{
 		sf::Vector2f positionOfVer = verH2->vert[i].position;
@@ -161,7 +159,7 @@ void isCollidingPP(Manifold & man)
 			return;
 		}
 	}
-	//cz (1) jest w obiekcie (2)
+	//czy (1) jest w obiekcie (2)
 	for (int i = 0; i < verH1->vert.getVertexCount(); ++i)
 	{
 		sf::Vector2f positionOfVer = verH1->vert[i].position;

@@ -11,7 +11,8 @@ MainLoop::MainLoop()
 	window.setView(camera);
 
 	//createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(-1, 0), 1, 0.5f, sf::Color::Green, 0);
-	//createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 0, 0.5f, sf::Color::Red, 0);
+	
+	createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 1, 0.5f, sf::Color::Red, 0);
 
 
 	sf::VertexArray newVert(sf::TriangleFan, 3);
