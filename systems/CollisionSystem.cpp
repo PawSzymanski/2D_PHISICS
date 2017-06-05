@@ -91,6 +91,8 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev)
 
 		m.force += frictionImpulse;
 	}
+	
+	m.force /= static_cast<float>(m.contactsCount);
 	ev.emit<ApplyForceEvent>(contact2, m.force, m.en2);
 	ev.emit<ApplyForceEvent>(contact1, -m.force, m.en1);
 
