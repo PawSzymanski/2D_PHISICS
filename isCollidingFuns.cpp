@@ -97,7 +97,9 @@ void isCollidingCP(Manifold & man)
 		std::cout << "BOK" << std::endl;
 		man.normal = -(rotMatrix * verH2->normals[index]);
 		man.contactsCount = 1;
-		man.contacts[0] = (man.normal * cirH1->r) + posH1->pos;
+
+		man.contacts[0] = man.normal * cirH1->r + posH1->pos;
+
 		man.penetration = cirH1->r - separation;
 
 		//std::cout << "normal: " << man.normal.x << " " <<man.normal.y << std::endl;
@@ -130,6 +132,8 @@ float leastPenetration(VertexArray::Handle verH1, sf::Vector2f point, int &side)
 
 void isCollidingPP(Manifold & man)
 {
+
+	man.contactsCount = 0;
 	Position::Handle posH1 = man.en1.component<Position>(),
 		posH2 = man.en2.component<Position>();
 	VertexArray::Handle verH1 = man.en1.component<VertexArray>(),
@@ -151,13 +155,16 @@ void isCollidingPP(Manifold & man)
 		//std::cout << penetration << std::endl;
 		if (penetration > 0)
 		{
-			man.contactsCount = 1;
+
 			man.normal = ROTMATRIX1 * verH1->normals[side];
-			man.contacts[0] = transH1->trans * positionOfVer;
+			man.contacts[man.contactsCount] = transH1->trans * positionOfVer;
 			man.penetration = penetration;
+			++man.contactsCount;
+			if (man.contactsCount == 2)
+				return;
 			//std::cout << "111111" << (side + 1) % verH1->vert.getVertexCount() << man.contacts[0].x << "  " << man.contacts[0].y << std::endl;
-			return;
 		}
+		
 	}
 	//czy (1) jest w obiekcie (2)
 	for (int i = 0; i < verH1->vert.getVertexCount(); ++i)
@@ -168,11 +175,14 @@ void isCollidingPP(Manifold & man)
 		//std::cout << penetration << std::endl;
 		if (penetration > 0)
 		{
-			man.contactsCount = 1;
+		
 			man.normal = ROTMATRIX2 * -verH2->normals[side];
-			man.contacts[0] = transH2->trans * positionOfVer;
+			man.contacts[man.contactsCount] = transH2->trans * positionOfVer;
 			man.penetration = penetration;
+			++man.contactsCount;
 			//std::cout << "2222222  " << (side + 1) % verH1->vert.getVertexCount() << " " <<man.contacts[0].x << "  "<< man.contacts[0].y <<std::endl;
+			std::cout << (int)man.contactsCount << std::endl;
+			if (man.contactsCount == 2)
 			return;
 		}
 	}

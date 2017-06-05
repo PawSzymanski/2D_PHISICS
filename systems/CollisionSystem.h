@@ -16,7 +16,9 @@ public:
 
 	CollisionSystem();
 
-	void ResolveCollision(Manifold & m);
+	void PositionalCorrection(Manifold & m);
+
+	void ResolveCollision(Manifold & m, entityx::EventManager & ev);
 
 	void update(entityx::EntityManager & en, entityx::EventManager & ev, double dt);
 

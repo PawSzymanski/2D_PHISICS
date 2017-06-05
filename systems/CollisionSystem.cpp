@@ -10,7 +10,21 @@ CollisionSystem::CollisionSystem()
 	dispatch[Type::POLYGON][Type::POLYGON] = isCollidingPP;
 }
 
-void CollisionSystem::ResolveCollision(Manifold &m)
+
+void CollisionSystem::PositionalCorrection(Manifold &m)
+{
+	Position::Handle posH1 = m.en1.component<Position>(), posH2 = m.en2.component<Position>();
+	//::Handle vel = en.component<Velocity>(), vel1 = en1.component<Velocity>();
+	Mass::Handle mas = m.en1.component<Mass>(), mas1 = m.en2.component<Mass>();
+
+	sf::Vector2f correction = m.normal* 1.1f*(m.penetration / (mas->invMass + mas1->invMass));
+	posH1->pos -= correction * mas->invMass;
+	posH2->pos += correction * mas1->invMass;
+}
+
+
+
+void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev)
 {
 	LinearVelocity::Handle velH1 = m.en1.component<LinearVelocity>(), velH2 = m.en2.component<LinearVelocity>();
 	Position::Handle posH1 = m.en1.component<Position>(), posH2 = m.en2.component<Position>();
@@ -20,7 +34,7 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 	Friction::Handle frH1 = m.en1.component<Friction>(), frH2 = m.en2.component<Friction>();
 
 	float restitution = 0.5f;
-
+	
 	if (equal(massH1->invMass + massH2->invMass, 0))
 	{
 		velH1->vel = sf::Vector2f(0, 0);
@@ -28,11 +42,11 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 		return;
 	}
 
-	// for(int i=0; i<m.contantCount ; ++i)
-	//{
-
-	sf::Vector2f contact1 = m.contacts[0] - posH1->pos,
-		contact2 = m.contacts[0] - posH2->pos;
+	 for(int i=0; i<m.contactsCount ; ++i)
+     {
+		 
+	sf::Vector2f contact1 = m.contacts[i] - posH1->pos,
+		contact2 = m.contacts[i] - posH2->pos;
 
 	sf::Vector2f relativeVel = velH2->vel + crossSV(angvelH2->radians(), contact2) -
 		velH1->vel - crossSV(angvelH1->radians(), contact1);
@@ -42,7 +56,7 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 	//std::cout << vecLenght(relativeVel) << " " << vecLenght(m.normal) << std:: endl;
 	if (contactVel > 0)
 		return;
-
+	
 	float contact1XNormal = crossVV(contact1, m.normal);
 	float contact2XNormal = crossVV(contact2, m.normal);
 	float invMassSum = massH1->invMass + massH2->invMass + sqr(contact1XNormal) *inertH1->invI + sqr(contact2XNormal) *inertH2->invI;
@@ -56,15 +70,31 @@ void CollisionSystem::ResolveCollision(Manifold &m)
 
 	//std::cout << contactVel.x << " " << contactVel.y << std::endl;
 	//friction 
-	relativeVel -= m.normal * 0.5f *dot(relativeVel, m.normal);
 
-	////from contact
-	relativeVel *= -(frH1->fr + frH2->fr) / 2;
-	relativeVel /= invMassSum;
-	std::cout << m.contacts[0].x << " " << m.contacts[0].y << std::endl;
-	m.force += relativeVel;
+	sf::Vector2f t =( relativeVel - ( m.normal * dot(relativeVel, m.normal)));
+	t= vecNormalize(t);
+	//std::cout << "friction: " << t.x <<" "<<t.y<< std::endl;
 
-	//}
+	float jt = -dot(relativeVel, t);
+
+	jt /= invMassSum;
+	
+	if (!equal(jt, 0.0f))
+	{
+		
+		sf::Vector2f frictionImpulse;
+
+		if (abs_f(jt) < force * 0.7)
+			frictionImpulse = t *jt;
+		else
+			frictionImpulse = t * -force * 0.5f;
+
+		m.force += frictionImpulse;
+	}
+	ev.emit<ApplyForceEvent>(contact2, m.force, m.en2);
+	ev.emit<ApplyForceEvent>(contact1, -m.force, m.en1);
+
+	}
 }
 
 void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager & ev, double dt)
@@ -85,7 +115,7 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 
 	for(int i=0; i<entitiesCount; ++i)
 	{
-		//ev.emit<ApplyForceEvent>(sf::Vector2f(0, 0), sf::Vector2f(0, 0.098), ens[i]); //GRAWITEJSZYN
+		ev.emit<ApplyForceEvent>(sf::Vector2f(0, 0), sf::Vector2f(0, 0.098), ens[i]); //GRAWITEJSZYN
 
 		for (int j=i+1; j<entitiesCount; ++j)
 		{			
@@ -101,14 +131,10 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 			if (!m.contactsCount)
 				continue;
 
-			ResolveCollision(m);
+			ResolveCollision(m,ev);
 			
-			sf::Vector2f contact1 = m.contacts[0] - posH1->pos,
-				contact2 = m.contacts[0] - posH2->pos;
 			
-			ev.emit<ApplyForceEvent>(contact2, m.force, ens[j]);
-			ev.emit<ApplyForceEvent>(contact1, -m.force, ens[i]);
-			
+			PositionalCorrection(m);
 			//std::cout << "tak: " <<m.penetration<< std::endl;
 		}
 	}
