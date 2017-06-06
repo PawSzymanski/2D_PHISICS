@@ -16,7 +16,7 @@ MainLoop::MainLoop()
 	triangle[0].color = sf::Color::Red;
 	triangle[1].position = sf::Vector2f(0.5, -0.5);
 	triangle[1].color = sf::Color::Red;
-	triangle[2].position = sf::Vector2f(0, 0.5);
+	triangle[2].position = sf::Vector2f(0, 1);
 	triangle[2].color = sf::Color::Red;
 
 	sf::VertexArray long_rect(sf::TriangleFan, 4);
@@ -30,15 +30,32 @@ MainLoop::MainLoop()
 	long_rect[3].position = sf::Vector2f(-8.5, 0.2);
 	long_rect[3].color = sf::Color::Black;
 
+	sf::VertexArray potato(sf::TriangleFan, 6);
+
+	potato[0].position = sf::Vector2f(-0.4, -0.5);
+	potato[0].color = sf::Color::Yellow;
+	potato[1].position = sf::Vector2f(0.6, -0.5);
+	potato[1].color = sf::Color::Yellow;
+	potato[2].position = sf::Vector2f(0.8, -0.2);
+	potato[2].color = sf::Color::Yellow;
+	potato[3].position = sf::Vector2f(0.3, 0.4);
+	potato[3].color = sf::Color::Yellow;
+	potato[4].position = sf::Vector2f(-0.6, 0.6);
+	potato[4].color = sf::Color::Yellow;
+	potato[5].position = sf::Vector2f(-0.8, 0.3);
+	potato[5].color = sf::Color::Yellow;
+
+
 	vertCont.addPoly(triangle, 3);
 	vertCont.addPoly(long_rect, 4);
+	vertCont.addPoly(potato, 6);
 
 
 	createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(0, 0), 1, sf::Color::Green, 0.5f);
 	//createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 1, sf::Color::Green, 0.5f);
 
 	createPolygon(sf::Vector2f(5, 6.7), sf::Vector2f(0, 0), 0, 1, 0);
-	//createPolygon(sf::Vector2f(7, 7), sf::Vector2f(0, 0), 0, 1, 0);
+	createPolygon(sf::Vector2f(7, 7), sf::Vector2f(0, 0), 0, 1, 2);
 
 	createPolygon(sf::Vector2f(8.75, 10.15), sf::Vector2f(0, 0), 0, 0, 1);
 	createPolygon(sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
@@ -88,22 +105,20 @@ void MainLoop::loop()
 
 			if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
 				window.close();
-			//else if (event.type == sf::Event::MouseMoved)
-			//{
-			//	sf::Vector2i mouse_pos = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
-			//	mouse_posf = window.mapPixelToCoords(mouse_pos, camera);
-			//	//std::cout<<"mouse: "<<mouse_posf.x<<" "<<mouse_posf.y<<std::endl;
-			//	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-			//		createCircle(mouse_posf, sf::Vector2f(0, 0), 1, 1, 0.25, 0.05, 0.07);
-			//}
-			//else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-			//{
-			//	createCircle(mouse_posf, sf::Vector2f(0, 0), 1, 4, 0.5, 0.05, 0.07);
-			//}
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+			else if (event.type == sf::Event::MouseMoved)
+			{
+			sf::Vector2i mouse_pos = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
+				mouse_posf = window.mapPixelToCoords(mouse_pos, camera);					
+			}
+			else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right)
+			{
+				createCircle(mouse_posf, sf::Vector2f(0, 0), 1, sf::Color::Green, 0.25f);
+			}
+			if (event.type == sf::Event::KeyPressed)
 			{
 				while (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 				{ }
+			
 			}
 
 		}

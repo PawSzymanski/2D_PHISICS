@@ -18,6 +18,7 @@ class MainLoop
 	sf::View camera;
 	entityx::EntityX ex;
 	Container vertCont;
+	sf::Vector2f mouse_posf;
 
 public:
 	
