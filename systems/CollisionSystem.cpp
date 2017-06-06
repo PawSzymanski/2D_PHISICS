@@ -17,7 +17,7 @@ void CollisionSystem::PositionalCorrection(Manifold &m)
 	//::Handle vel = en.component<Velocity>(), vel1 = en1.component<Velocity>();
 	Mass::Handle mas = m.en1.component<Mass>(), mas1 = m.en2.component<Mass>();
 
-	sf::Vector2f correction = m.normal* 1.1f*(m.penetration / (mas->invMass + mas1->invMass));
+	sf::Vector2f correction = m.normal* 0.9f*(m.penetration / (mas->invMass + mas1->invMass));
 	posH1->pos -= correction * mas->invMass;
 	posH2->pos += correction * mas1->invMass;
 }
@@ -134,8 +134,7 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 				continue;
 
 			ResolveCollision(m,ev);
-			
-			
+					
 			PositionalCorrection(m);
 			//std::cout << "tak: " <<m.penetration<< std::endl;
 		}
