@@ -53,6 +53,8 @@ void isCollidingCP(Manifold & man)
 	}
 	sf::Vector2f vertex1 = verH2->vert[index].position,
 		vertex2 = verH2->vert[(index+1) % vertSize].position;
+	float vertex1Sep = vecLenght(centerCir - vertex1);
+	float vertex2Sep = vecLenght(centerCir - vertex2);
 
 	sf::Transform rotMatrix;
 	rotMatrix.rotate(rotH2->degree);
@@ -74,33 +76,35 @@ void isCollidingCP(Manifold & man)
 	//std::cout << "dot1:  "<< centerCir.x << " " << centerCir.y << std::endl;
 	if (dot1 < 0)
 	{
-		std::cout << "V1" << std::endl;
+		//std::cout << "V1" << std::endl;
 		if (distanceSq(vertex1, centerCir) > (cirH1->r*cirH1->r) )
 			return;
 		man.normal = rotMatrix * vecNormalize(vertex1 - centerCir);
 		man.contactsCount = 1;
 		man.contacts[0] = rotMatrix * vertex1 + posH2->pos;
-		man.penetration = cirH1->r - separation;
+		man.penetration = cirH1->r - vertex1Sep;
 	}
 	else if (dot2 < 0)
 	{
-		std::cout << "V2" << std::endl;
+		//std::cout << "V2" << std::endl;
 		if (distanceSq(vertex2, centerCir) > (cirH1->r*cirH1->r))
 			return;
 		man.normal = rotMatrix * vecNormalize(vertex2 - centerCir);
 		man.contactsCount = 1;
 		man.contacts[0] = rotMatrix * vertex2 + posH2->pos;
-		man.penetration = cirH1->r - separation;
+		man.penetration = cirH1->r - vertex2Sep;
 	}
 	else
 	{
-		std::cout << "BOK" << std::endl;
+		//std::cout << "BOK" << std::endl;
 		man.normal = -(rotMatrix * verH2->normals[index]);
 		man.contactsCount = 1;
 
 		man.contacts[0] = man.normal * cirH1->r + posH1->pos;
 
 		man.penetration = cirH1->r - separation;
+
+		//std::cout << "separation: " << separation << std::endl;
 
 		//std::cout << "normal: " << man.normal.x << " " <<man.normal.y << std::endl;
 	}
@@ -109,7 +113,8 @@ void isCollidingCP(Manifold & man)
 
 void isCollidingPC(Manifold & man)
 {
-
+	std::swap(man.en1, man.en2);
+	isCollidingCP(man);
 }
 
 
@@ -123,7 +128,6 @@ float leastPenetration(VertexArray::Handle verH1, sf::Vector2f point, int &side)
 		float sep = dot(verH1->normals.at(i), point - verH1->vert[i].position);
 		side = (sep > max_sep) ? i: side;
 		max_sep = (sep > max_sep) ? sep : max_sep;
-		//side = (sep > max_sep) ? i : side;
 	}
 	//std::cout << side << std::endl;
 	return -max_sep;
@@ -158,7 +162,7 @@ void isCollidingPP(Manifold & man)
 
 			man.normal = ROTMATRIX1 * verH1->normals[side];
 			man.contacts[man.contactsCount] = transH1->trans * positionOfVer;
-			man.penetration = penetration;
+			man.penetration = (penetration > man.penetration) ? penetration : man.penetration;
 			++man.contactsCount;
 			if (man.contactsCount == 2)
 				return;
@@ -178,10 +182,10 @@ void isCollidingPP(Manifold & man)
 		
 			man.normal = ROTMATRIX2 * -verH2->normals[side];
 			man.contacts[man.contactsCount] = transH2->trans * positionOfVer;
-			man.penetration = penetration;
+			man.penetration = (penetration > man.penetration) ? penetration : man.penetration;
 			++man.contactsCount;
 			//std::cout << "2222222  " << (side + 1) % verH1->vert.getVertexCount() << " " <<man.contacts[0].x << "  "<< man.contacts[0].y <<std::endl;
-			std::cout << (int)man.contactsCount << std::endl;
+			//std::cout << (int)man.contactsCount << std::endl;
 			if (man.contactsCount == 2)
 			return;
 		}
