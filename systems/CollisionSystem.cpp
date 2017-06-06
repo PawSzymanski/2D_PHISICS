@@ -132,7 +132,6 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 
 			if (!m.contactsCount)
 				continue;
-
 			ResolveCollision(m,ev);
 					
 			PositionalCorrection(m);

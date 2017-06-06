@@ -72,6 +72,11 @@ struct Line : public entityx::Component<Line>
 
 struct Transform : entityx::Component<Transform>
 {
+	Transform(sf::Vector2f pos, float rot) {
+		trans.rotate(rot);
+		trans.translate(pos);
+	}
+
 	sf::Transform trans;
 };
 

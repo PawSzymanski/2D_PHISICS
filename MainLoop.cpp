@@ -42,7 +42,7 @@ MainLoop::MainLoop()
 	potato[3].color = sf::Color::Yellow;
 	potato[4].position = sf::Vector2f(-0.6, 0.6);
 	potato[4].color = sf::Color::Yellow;
-	potato[5].position = sf::Vector2f(-0.8, 0.3);
+	potato[5].position = sf::Vector2f(-0.8, -0.5);
 	potato[5].color = sf::Color::Yellow;
 
 
@@ -55,7 +55,7 @@ MainLoop::MainLoop()
 	//createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 1, sf::Color::Green, 0.5f);
 
 	createPolygon(sf::Vector2f(5, 6.7), sf::Vector2f(0, 0), 0, 1, 0);
-	createPolygon(sf::Vector2f(7, 7), sf::Vector2f(0, 0), 0, 1, 2);
+	createPolygon(sf::Vector2f(10, 7), sf::Vector2f(0, 0), 0, 1, 2);
 
 	createPolygon(sf::Vector2f(8.75, 10.15), sf::Vector2f(0, 0), 0, 0, 1);
 	createPolygon(sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
@@ -150,7 +150,7 @@ void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel, float mass, sf::
 	en.assign<AngularVelocity>(0);
 	en.assign<Circle>(r, col);
 	en.assign<Line>(sf::Vector2f(0,0),sf::Vector2f(r, 0), sf::Color::Black);
-	en.assign<Transform>();
+	en.assign<Transform>(pos, 0.0);
 	en.assign<AngularForce>();
 	en.assign<LinearForce>();
 	en.assign<Mass>(mass);
@@ -165,7 +165,7 @@ void MainLoop::createPolygon(sf::Vector2f pos, sf::Vector2f vel, float rotation,
 	en.assign<Position>(pos);
 	en.assign<LinearVelocity>(vel);
 	en.assign<AngularVelocity>(0);
-	en.assign<Transform>();
+	en.assign<Transform>(pos, rotation);
 	en.assign<AngularForce>();
 	en.assign<LinearForce>();
 	en.assign<Mass>(mass);
