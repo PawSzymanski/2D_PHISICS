@@ -51,11 +51,11 @@ MainLoop::MainLoop()
 	vertCont.addPoly(potato, 6);
 
 
-	createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(0, 0), 1, sf::Color::Green, 0.5f);
+	//createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(0, 0), 1, sf::Color::Green, 0.5f);
 	//createCircle(sf::Vector2f(5, 5), sf::Vector2f(0, 0), 1, sf::Color::Green, 0.5f);
 
-	createPolygon(sf::Vector2f(5, 6.7), sf::Vector2f(0, 0), 0, 1, 0);
-	createPolygon(sf::Vector2f(10, 7), sf::Vector2f(0, 0), 0, 1, 2);
+	//createPolygon(sf::Vector2f(5, 6.7), sf::Vector2f(0, 0), 0, 1, 0);
+	//createPolygon(sf::Vector2f(10, 7), sf::Vector2f(0, 0), 0, 1, 2);
 
 	createPolygon(sf::Vector2f(8.75, 10.15), sf::Vector2f(0, 0), 0, 0, 1);
 	createPolygon(sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
@@ -118,6 +118,10 @@ void MainLoop::loop()
 			{
 				while (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 				{ }
+				if (event.key.code == sf::Keyboard::Q)
+					createPolygon(mouse_posf, sf::Vector2f(0, 0), 0, 3, 0);
+				else if (event.key.code == sf::Keyboard::W)
+					createPolygon(mouse_posf, sf::Vector2f(0, 0), 0, 5, 2);
 			
 			}
 
@@ -129,7 +133,7 @@ void MainLoop::loop()
 			++counter;
 
 			time -= sf::seconds(0.01f);
-
+			std::cout << ex.entities.size() << std::endl;
 			update(0.01f);
 
 			time = clock.restart();
