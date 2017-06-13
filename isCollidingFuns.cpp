@@ -31,12 +31,16 @@ void isCollidingCP(Manifold & man)
 	VertexArray::Handle verH2 = man.en2.component<VertexArray>();
 	Transform::Handle transH2 = man.en2.component<Transform>();
 	Rotation::Handle rotH2 = man.en2.component<Rotation>();
+	LinearVelocity::Handle velH1 = man.en1.component<LinearVelocity>(),
+		velH2 = man.en2.component<LinearVelocity>();
+
 
 	sf::Vector2f centerCir =  (transH2->trans.getInverse() * (posH1->pos)) ;
 	int index = 0;
 	float separation = -FLT_MAX;
 	int vertSize = verH2->vert.getVertexCount();
 	
+
 
 	for (int a = 0; a < vertSize; ++a)
 	{
@@ -59,15 +63,15 @@ void isCollidingCP(Manifold & man)
 	sf::Transform rotMatrix;
 	rotMatrix.rotate(rotH2->degree);
 
-	//std::cout << "d: " << rotH2->degree<< std::endl;
-
+	///std::cout << "separation: " << separation << std::endl;
+	//system("pause");
 	if (separation < EPSILON)
 	{
 		std::cout << "ŒRODEK" << std::endl;
 		man.contactsCount = 1;
 		man.normal = rotMatrix * verH2->normals[index];
 		man.contacts[0] = man.normal * cirH1->r + posH1->pos;
-		man.penetration = cirH1->r;
+		man.penetration = 3.0f * cirH1->r + separation;
 		return;
 	}
 
@@ -117,20 +121,140 @@ void isCollidingPC(Manifold & man)
 	isCollidingCP(man);
 }
 
-
-
-float leastPenetration(VertexArray::Handle verH1, sf::Vector2f point, int &side)
+sf::Vector2f GetSupport(VertexArray::Handle verH, sf::Vector2f normal)
 {
-	int verCount = verH1->vert.getVertexCount();
-	float max_sep = -FLT_MAX;
-	for (int i = 0; i < verCount; ++i)
+	float bestDistance = -FLT_MAX;
+	int bestVertex;
+	for (int i = 0; i < verH->vert.getVertexCount(); ++i)
 	{
-		float sep = dot(verH1->normals.at(i), point - verH1->vert[i].position);
-		side = (sep > max_sep) ? i: side;
-		max_sep = (sep > max_sep) ? sep : max_sep;
+		if (dot(normal, verH->vert[i].position) > bestDistance)
+		{
+			bestDistance = dot(normal, verH->vert[i].position);
+			bestVertex = i;
+		}
 	}
-	//std::cout << side << std::endl;
-	return -max_sep;
+	
+	sf::Vector2f ver = verH->vert[bestVertex].position;
+	return ver;
+}
+
+float findLeastPenetration(Manifold &m, int &faceIndex)
+{
+	Position::Handle posH1 = m.en1.component<Position>(),
+		posH2 = m.en2.component<Position>();
+	VertexArray::Handle verH1 = m.en1.component<VertexArray>(),
+		verH2 = m.en2.component<VertexArray>();
+	Rotation::Handle  rotH1 = m.en1.component<Rotation>(),
+		rotH2 = m.en2.component<Rotation>();
+	Transform::Handle transH1 = m.en1.component<Transform>(),
+		transH2 = m.en2.component<Transform>();
+	sf::Transform ROTMATRIX1, ROTMATRIX2;
+	ROTMATRIX1.rotate(rotH1->degree);
+	ROTMATRIX2.rotate(rotH2->degree);
+
+	float bestDistance = FLT_MIN;
+	int bestIndex;
+	for (int i = 0; i < verH1->vert.getVertexCount(); ++i)
+	{
+		sf::Vector2f nUnrotated = verH1->normals[i];
+		sf::Vector2f normal = ROTMATRIX1 * nUnrotated;
+
+		normal = ROTMATRIX2.getInverse() * normal;
+
+		sf::Vector2f furtherVerB = GetSupport(verH2, -normal);
+
+		sf::Vector2f verA = verH1->vert[i].position;
+		verA = transH1->trans *verA;
+		verA -= posH2->pos;
+		verA = ROTMATRIX2.getInverse() * verA;
+		///
+		std::cout << "ver: " << furtherVerB.x << " " << furtherVerB.y << std::endl;
+		float distanseCurr = dot(normal, furtherVerB - verA);
+
+		if (distanseCurr > bestDistance)
+		{
+			bestDistance = distanseCurr;
+			bestIndex = i;
+		}
+	}	
+	faceIndex = bestIndex;
+	std::cout << "bd: " << bestDistance << std::endl;
+	return bestDistance;
+}
+
+void findIncidentFace(sf::Vector2f *ver, entityx::Entity RefPoly,
+	entityx::Entity IncPoly,int referenceIndex)
+{
+	Position::Handle posH11 = RefPoly.component<Position>(),
+		posH22 = IncPoly.component<Position>();
+	VertexArray::Handle verH11 = RefPoly.component<VertexArray>(),
+		verH22 = IncPoly.component<VertexArray>();
+	Transform::Handle transH11 = RefPoly.component<Transform>(),
+		transH22 = IncPoly.component<Transform>();
+	Rotation::Handle  rotH11 = RefPoly.component<Rotation>(),
+		rotH22 = IncPoly.component<Rotation>();
+	
+	sf::Transform ROTMATRIX1, ROTMATRIX2;
+	ROTMATRIX1.rotate(rotH11->degree);
+	ROTMATRIX2.rotate(rotH22->degree);
+	
+	sf::Vector2f referenceNormal = verH11->normals[referenceIndex];
+	//swiat
+	referenceNormal = ROTMATRIX1 * referenceNormal;
+	//B
+	referenceNormal = ROTMATRIX2.getInverse() * referenceNormal;
+
+	int incidentFace = 0;
+	float minDot = FLT_MAX;
+
+	for (int i = 0; i < verH22->vert.getVertexCount(); ++i)
+	{
+		float dotCurr = dot(referenceNormal, verH22->vert[i].position);
+		if (dotCurr < minDot)
+		{
+			minDot = dotCurr;
+			incidentFace = i;
+		}
+	}
+
+	ver[0] = transH22->trans * verH22->vert[incidentFace].position;
+	incidentFace = (incidentFace + 1) % verH22->vert.getVertexCount();
+	ver[1] = transH22->trans * verH22->vert[incidentFace].position;
+}
+
+int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
+{
+	int sp = 0;
+	sf::Vector2f out[2] = {
+		face[0],
+		face[1]
+	};
+
+	// Retrieve distances from each endpoint to the line
+	// d = ax + by - c
+	float d1 = dot(normal, face[0]) - c;
+	float d2 = dot(normal, face[1]) - c;
+
+	// If negative (behind plane) clip
+	if (d1 <= 0.0f) out[sp++] = face[0];
+	if (d2 <= 0.0f) out[sp++] = face[1];
+
+	// If the points are on different sides of the plane
+	if (d1 * d2 < 0.0f) // less than to ignore -0.0f
+	{
+		// Push interesection point
+		float alpha = d1 / (d1 - d2);
+		out[sp] = face[0] + alpha * (face[1] - face[0]);
+		++sp;
+	}
+
+	// Assign our new converted values
+	face[0] = out[0];
+	face[1] = out[1];
+
+	assert(sp != 3);
+
+	return sp;
 }
 
 
@@ -149,48 +273,195 @@ void isCollidingPP(Manifold & man)
 	sf::Transform ROTMATRIX1, ROTMATRIX2;
 	ROTMATRIX1.rotate(rotH1->degree);
 	ROTMATRIX2.rotate(rotH2->degree);
-	int side=0;
-  //czy (2) jest w obiekcie (1)
-	for (int i = 0; i < verH2->vert.getVertexCount(); ++i)
-	{
-		sf::Vector2f positionOfVer = verH2->vert[i].position;
-		positionOfVer = transH1->trans.getInverse() *(transH2->trans * positionOfVer);	
-		float penetration = leastPenetration(verH1, positionOfVer, side);		
-		//std::cout << penetration << std::endl;
-		if (penetration > 0)
-		{
 
-			man.normal = ROTMATRIX1 * verH1->normals[side];
-			man.contacts[man.contactsCount] = transH1->trans * positionOfVer;
-			man.penetration = (penetration > man.penetration) ? penetration : man.penetration;
-			++man.contactsCount;
-			if (man.contactsCount == 2)
-				return;
-			//std::cout << "111111" << (side + 1) % verH1->vert.getVertexCount() << man.contacts[0].x << "  " << man.contacts[0].y << std::endl;
-		}
-		
-	}
-	//czy (1) jest w obiekcie (2)
-	for (int i = 0; i < verH1->vert.getVertexCount(); ++i)
+	int faceIndexA;
+	std::cout << "1" << std::endl;
+	float penetrationA = findLeastPenetration(man, faceIndexA);
+	if (penetrationA >= 0.0f)
+		return;
+	std::cout << " weszo" << std::endl;
+	// Check for a separating axis with B's face planes
+	int faceIndexB;
+	float penetrationB = findLeastPenetration(man, faceIndexB);
+	if (penetrationB >= 0.0f)
+		return;
+	std::cout << " weszo" << std::endl;
+	int referenceIndex;
+	bool flip;
+
+	entityx::Entity RefPoly = man.en1,
+		IncPoly = man.en2;
+	Position::Handle posH11 = RefPoly.component<Position>(),
+		posH22 = IncPoly.component<Position>();
+	VertexArray::Handle verH11 = RefPoly.component<VertexArray>(),
+		verH22 = IncPoly.component<VertexArray>();
+	Transform::Handle transH11 = RefPoly.component<Transform>(),
+		transH22 = IncPoly.component<Transform>();
+	Rotation::Handle  rotH11 = RefPoly.component<Rotation>(),
+		rotH22 = IncPoly.component<Rotation>();
+	sf::Transform ROTMATRIX11, ROTMATRIX22;
+	ROTMATRIX11.rotate(rotH11->degree);
+	ROTMATRIX22.rotate(rotH22->degree);
+
+	if (BiasGreaterThan(penetrationA, penetrationB))
 	{
-		sf::Vector2f positionOfVer = verH1->vert[i].position;
-		positionOfVer = transH2->trans.getInverse() *(transH1->trans * positionOfVer);
-		float penetration = leastPenetration(verH2, positionOfVer, side);
-		//std::cout << penetration << std::endl;
-		if (penetration > 0)
-		{
-		
-			man.normal = ROTMATRIX2 * -verH2->normals[side];
-			man.contacts[man.contactsCount] = transH2->trans * positionOfVer;
-			man.penetration = (penetration > man.penetration) ? penetration : man.penetration;
-			++man.contactsCount;
-			//std::cout << "2222222  " << (side + 1) % verH1->vert.getVertexCount() << " " <<man.contacts[0].x << "  "<< man.contacts[0].y <<std::endl;
-			//std::cout << (int)man.contactsCount << std::endl;
-			if (man.contactsCount == 2)
-			return;
-		}
+		RefPoly = man.en1,
+		IncPoly = man.en2;
+		referenceIndex = faceIndexA;
+		flip = false;
 	}
+	else
+	{
+		RefPoly = man.en2;
+		IncPoly = man.en1;
+		referenceIndex = faceIndexB;
+		flip = true;
+	}
+	sf::Vector2f incidentFace[2];
 	
+	findIncidentFace(incidentFace, RefPoly, IncPoly, referenceIndex);
+	//312
+	sf::Vector2f ver1 = verH11->vert[referenceIndex].position;
+	ver1 = transH22->trans * ver1;
+	sf::Vector2f referenceNormal = verH11->normals[referenceIndex];
+	//moze byc zle
+	referenceNormal = ROTMATRIX11 * referenceNormal;
+	
+	referenceIndex = (referenceIndex + 1) % verH11->vert.getVertexCount();
+	sf::Vector2f ver2 = verH11->vert[referenceIndex].position;
+	ver2 = transH22->trans * ver2;
+
+	float refC = dot(referenceNormal, ver1);
+	float negSide = -dot(referenceNormal, ver1);
+	float posSide = dot(referenceNormal, ver2);
+
+	if (clip(-referenceNormal, negSide, incidentFace) < 2)
+		return; // Due to floating point error, possible to not have required points
+	std::cout << " weszo" << std::endl;
+	if (clip(referenceNormal, posSide, incidentFace) < 2)
+		return; // Due to floating point error, possible to not have required points
+	std::cout << " weszo" << std::endl;
+	man.normal = flip ? -referenceNormal : referenceNormal;
+
+	int clippedPoints = 0;
+
+	float separation = dot(referenceNormal, incidentFace[0]) - refC;
+	if (separation <= 0.0f)
+	{
+		man.contacts[clippedPoints] = incidentFace[0];
+		man.penetration = -separation;
+	}
+	else
+		man.penetration = 0.f;
+
+	separation = dot(referenceNormal, incidentFace[1]);
+
+	if (separation <= 0.0f)
+	{
+		man.contacts[clippedPoints] = incidentFace[1];
+		man.penetration += separation;
+		++clippedPoints;
+		man.penetration /= static_cast<float>(clippedPoints);
+	}
+	man.contactsCount = clippedPoints;
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+float leastPenetration(VertexArray::Handle verH1, sf::Vector2f point, int &side)
+{
+	int verCount = verH1->vert.getVertexCount();
+	float max_sep = -FLT_MAX;
+
+	for (int i = 0; i < verCount; ++i)
+	{
+		float sep = dot(verH1->normals.at(i), point - verH1->vert[i].position);
+		side = (sep > max_sep) ? i : side;
+		max_sep = (sep > max_sep) ? sep : max_sep;
+	}
+	//std::cout << side << std::endl;
+	return -max_sep;
+}
+
+
+
+
+
+
+
+int side=0;
+//czy (2) jest w obiekcie (1)
+for (int i = 0; i < verH2->vert.getVertexCount(); ++i)
+{
+sf::Vector2f positionOfVer = verH2->vert[i].position;
+positionOfVer = transH1->trans.getInverse() *(transH2->trans * positionOfVer);
+float penetration = leastPenetration(verH1, positionOfVer, side);
+//std::cout << penetration << std::endl;
+if (penetration > 0)
+{
+
+man.normal = ROTMATRIX1 * verH1->normals[side];
+man.contacts[man.contactsCount] = transH1->trans * positionOfVer;
+man.penetration = (penetration > man.penetration) ? penetration : man.penetration;
+//if (man.penetration > EPSILON)
+//std::cout << man.penetration << std::endl;
+++man.contactsCount;
+if (man.contactsCount >= 2)
+return;
+//std::cout << "111111" << (side + 1) % verH1->vert.getVertexCount() << man.contacts[0].x << "  " << man.contacts[0].y << std::endl;
+}
+
+}
+//czy (1) jest w obiekcie (2)
+for (int i = 0; i < verH1->vert.getVertexCount(); ++i)
+{
+sf::Vector2f positionOfVer = verH1->vert[i].position;
+positionOfVer = transH2->trans.getInverse() *(transH1->trans * positionOfVer);
+float penetration = leastPenetration(verH2, positionOfVer, side);
+//std::cout << penetration << std::endl;
+if (penetration > 0)
+{
+
+man.normal = ROTMATRIX2 * -verH2->normals[side];
+man.contacts[man.contactsCount] = transH2->trans * positionOfVer;
+man.penetration = (penetration > man.penetration) ? penetration : man.penetration;
+//if (man.penetration > EPSILON)
+//	std::cout << man.penetration << std::endl;
+++man.contactsCount;
+//std::cout << "2222222  " << (side + 1) % verH1->vert.getVertexCount() << " " <<man.contacts[0].x << "  "<< man.contacts[0].y <<std::endl;
+//std::cout << (int)man.contactsCount << std::endl;
+if (man.contactsCount >= 2)
+return;
+}
+}*/

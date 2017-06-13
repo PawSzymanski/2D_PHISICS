@@ -21,7 +21,13 @@ void RenderSystem::update(entityx::EntityManager & en, entityx::EventManager & e
 	VertexArray::Handle vArray;
 	win.clear(sf::Color::Blue);
 
-	for (auto entity : en.entities_with_components( circ, pos, line, trans ))
+
+
+	for (auto entity : en.entities_with_components(vArray, trans))
+	{
+		win.draw(vArray->vert, trans->trans);
+	}
+	for (auto entity : en.entities_with_components(circ, pos, line, trans))
 	{
 		sf::CircleShape c_shape;
 		c_shape.setFillColor(circ->color);
@@ -31,12 +37,6 @@ void RenderSystem::update(entityx::EntityManager & en, entityx::EventManager & e
 		win.draw(c_shape);
 		win.draw(line->line, trans->trans);
 	}
-
-	for (auto entity : en.entities_with_components(vArray, trans))
-	{
-		win.draw(vArray->vert, trans->trans);
-	}
-
 	for (auto entity : en.entities_with_components(line))
 		win.draw(line->line);
 

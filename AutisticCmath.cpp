@@ -61,3 +61,10 @@ inline float sqr(float a)
 {
 	return a*a;
 }
+
+inline bool BiasGreaterThan(float a, float b)
+{
+	const float k_biasRelative = 0.95f;
+	const float k_biasAbsolute = 0.01f;
+	return a >= b * k_biasRelative + a * k_biasAbsolute;
+}

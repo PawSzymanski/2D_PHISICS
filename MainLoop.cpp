@@ -40,9 +40,9 @@ MainLoop::MainLoop()
 	potato[2].color = sf::Color::Yellow;
 	potato[3].position = sf::Vector2f(0.3, 0.4);
 	potato[3].color = sf::Color::Yellow;
-	potato[4].position = sf::Vector2f(-0.6, 0.6);
+	potato[4].position = sf::Vector2f(-0.7, 0.9);
 	potato[4].color = sf::Color::Yellow;
-	potato[5].position = sf::Vector2f(-0.8, -0.5);
+	potato[5].position = sf::Vector2f(-0.8, -0.0);
 	potato[5].color = sf::Color::Yellow;
 
 
@@ -133,11 +133,12 @@ void MainLoop::loop()
 			++counter;
 
 			time -= sf::seconds(0.01f);
-			std::cout << ex.entities.size() << std::endl;
-			update(0.01f);
+			//std::cout << ex.entities.size() << std::endl;
+			//update(0.01f);
 
 			time = clock.restart();
 		}
+		update(0.01f);
 		render();
 
 		float fps = 1.0f / fpsclock.restart().asSeconds();

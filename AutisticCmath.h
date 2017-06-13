@@ -2,7 +2,7 @@
 #include <SFML\Graphics.hpp>
 #include <cmath>
 
-const float EPSILON = 0.0001f;
+const float EPSILON = 0.01f;
 inline float abs_f(float);
 
 inline sf::Vector2f crossVS(const sf::Vector2f &v, float a);
@@ -19,3 +19,5 @@ inline float distanceSq(const sf::Vector2f & a, const sf::Vector2f & b);
 
 inline bool equal(float a, float b);
 inline float sqr(float a);
+
+inline bool BiasGreaterThan(float a, float b);
