@@ -209,11 +209,12 @@ void findIncidentFace(sf::Vector2f *ver, entityx::Entity RefPoly,
 	int incidentFace = 0;
 	float minDot = FLT_MAX;
 	std::cout << "normal: " << referenceNormal.x << " " << referenceNormal.y << std:: endl;
+	std::cout << "incydent amount: " << verH22->vert.getVertexCount() << std::endl;
 	for (int i = 0; i < verH22->vert.getVertexCount(); ++i)
 	{
-		std::cout << "vertex: " <<verH22->vert[i].position.x << " " << verH22->vert[i].position.y << std::endl;
+		std::cout << "inc vertex: " <<verH22->vert[i].position.x << " " << verH22->vert[i].position.y << std::endl;
 		//DODLA£EM "MINUS" DO REF
-		float dotCurr = dot(-referenceNormal, verH22->normals[i]);
+		float dotCurr = dot(referenceNormal, verH22->normals[i]);
 		if (dotCurr < minDot)
 		{
 			minDot = dotCurr;
@@ -223,10 +224,10 @@ void findIncidentFace(sf::Vector2f *ver, entityx::Entity RefPoly,
 	}
 
 	ver[0] = transH22->trans * verH22->vert[incidentFace].position;
-	std::cout << "index1: " << incidentFace << std::endl;
+	std::cout << "inc index1: " << incidentFace << std::endl;
 	incidentFace = (incidentFace + 1) % verH22->vert.getVertexCount();
 	ver[1] = transH22->trans * verH22->vert[incidentFace].position;
-	std::cout << "index2: " << incidentFace << std::endl;
+	std::cout << "inc index2: " << incidentFace << std::endl;
 }
 
 int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
@@ -304,17 +305,8 @@ void isCollidingPP(Manifold & man)
 
 	entityx::Entity RefPoly = man.en1,
 		IncPoly = man.en2;
-	Position::Handle posH11 = RefPoly.component<Position>(),
-		posH22 = IncPoly.component<Position>();
-	VertexArray::Handle verH11 = RefPoly.component<VertexArray>(),
-		verH22 = IncPoly.component<VertexArray>();
-	Transform::Handle transH11 = RefPoly.component<Transform>(),
-		transH22 = IncPoly.component<Transform>();
-	Rotation::Handle  rotH11 = RefPoly.component<Rotation>(),
-		rotH22 = IncPoly.component<Rotation>();
-	sf::Transform ROTMATRIX11, ROTMATRIX22;
-	ROTMATRIX11.rotate(rotH11->degree);
-	ROTMATRIX22.rotate(rotH22->degree);
+	
+
 
 	if (!BiasGreaterThan(penetrationA, penetrationB))
 	{
@@ -330,6 +322,20 @@ void isCollidingPP(Manifold & man)
 		referenceIndex = faceIndexB;
 		flip = true;
 	}
+
+	Position::Handle posH11 = RefPoly.component<Position>(),
+		posH22 = IncPoly.component<Position>();
+	VertexArray::Handle verH11 = RefPoly.component<VertexArray>(),
+		verH22 = IncPoly.component<VertexArray>();
+	Transform::Handle transH11 = RefPoly.component<Transform>(),
+		transH22 = IncPoly.component<Transform>();
+	Rotation::Handle  rotH11 = RefPoly.component<Rotation>(),
+		rotH22 = IncPoly.component<Rotation>();
+
+
+	sf::Transform ROTMATRIX11, ROTMATRIX22;
+	ROTMATRIX11.rotate(rotH11->degree);
+	ROTMATRIX22.rotate(rotH22->degree);
 	sf::Vector2f incidentFace[2];
 	
 	findIncidentFace(incidentFace, RefPoly, IncPoly, referenceIndex);
@@ -341,17 +347,17 @@ void isCollidingPP(Manifold & man)
 	
 	
 	sf::Vector2f referenceNormal = verH11->normals[referenceIndex];
-	std::cout << "ver1: " << ver1.x << " " << ver1.y << std::endl;
+	std::cout << "ref ver1: " << ver1.x << " " << ver1.y << std::endl;
 	
 	
 	//DODA£EM SIDEPLANE!!!!!!!!!!!
-	sf::Vector2f SIDEPLANENormal = verH11->normals[referenceIndex];
+	//sf::Vector2f SIDEPLANENormal = verH11->normals[referenceIndex];
 	//moze byc zle
 	referenceNormal = ROTMATRIX11 * referenceNormal;
 
-	sf::Transform t90;
-	t90.rotate(90);
-	SIDEPLANENormal = t90 * SIDEPLANENormal;
+	//sf::Transform t90;
+	//t90.rotate(90);
+	//SIDEPLANENormal = t90 * SIDEPLANENormal;
 	
 	
 	referenceIndex = (referenceIndex + 1) % verH11->vert.getVertexCount();
@@ -361,25 +367,25 @@ void isCollidingPP(Manifold & man)
 	ver2 = transH11->trans * ver2;
 	
 	
-	std::cout << "ver2: " << ver2.x << " " << ver2.y << std::endl;
-
-	std::cout << "sideplanenormal: " << SIDEPLANENormal.x << " " << SIDEPLANENormal.y << std::endl;
+	std::cout << "ref ver2: " << ver2.x << " " << ver2.y << std::endl;
+	std::cout << "ref amount: " << verH11->vert.getVertexCount() << std::endl;
+	//std::cout << "sideplanenormal: " << SIDEPLANENormal.x << " " << SIDEPLANENormal.y << std::endl;
 	
 	
 	//DODA£EM SIDEPLANE
 	float refC = dot(referenceNormal, ver1);
-	float negSide = -dot(SIDEPLANENormal, ver1);
-	float posSide = dot(-SIDEPLANENormal, ver2);
+	//float negSide = -dot(SIDEPLANENormal, ver1);
+	//float posSide = dot(-SIDEPLANENormal, ver2);
 
-	std::cout << " weszo3a" << " " <<incidentFace[0].x << " " 
-		<< incidentFace[0].y << " " << incidentFace[1].x << " " 
-		<< incidentFace[1].y << " " << refC << " " << negSide << " " << posSide <<std::endl;
+	std::cout << " weszo3a" << " "// <<incidentFace[0].x << " " 
+		//<< incidentFace[0].y << " " << incidentFace[1].x << " " << incidentFace[1].y << " " 
+		<< refC <<std::endl;
 	
-	if (clip(-referenceNormal, negSide, incidentFace) < 2)
+	if (clip(-referenceNormal, refC , incidentFace) < 2)
 		return; // Due to floating point error, possible to not have required points
 	std::cout << " weszo3" << std::endl;
 	
-	if (clip(referenceNormal, posSide, incidentFace) < 2)
+	if (clip(referenceNormal, refC , incidentFace) < 2)
 		return; // Due to floating point error, possible to not have required points
 	
 	std::cout << " weszo4" << std::endl;
