@@ -185,7 +185,7 @@ float findLeastPenetration(entityx::Entity en1, entityx::Entity en2, int &faceIn
 }
 
 void findIncidentFace(sf::Vector2f *ver, entityx::Entity RefPoly,
-	entityx::Entity IncPoly,int referenceIndex)
+	entityx::Entity IncPoly, int referenceIndex)
 {
 	Position::Handle posH11 = RefPoly.component<Position>(),
 		posH22 = IncPoly.component<Position>();
@@ -212,19 +212,21 @@ void findIncidentFace(sf::Vector2f *ver, entityx::Entity RefPoly,
 	for (int i = 0; i < verH22->vert.getVertexCount(); ++i)
 	{
 		std::cout << "vertex: " <<verH22->vert[i].position.x << " " << verH22->vert[i].position.y << std::endl;
-
-		float dotCurr = dot(referenceNormal, verH22->vert[i].position);
+		//DODLA£EM "MINUS" DO REF
+		float dotCurr = dot(-referenceNormal, verH22->normals[i]);
 		if (dotCurr < minDot)
 		{
 			minDot = dotCurr;
 			incidentFace = i;
-			std::cout << "mindot: " << minDot << std::endl;
+			std::cout << "mindot: " << minDot << std::endl  ;
 		}
 	}
 
-	ver[0] = transH22->trans * verH22->vert[++incidentFace].position;
+	ver[0] = transH22->trans * verH22->vert[incidentFace].position;
+	std::cout << "index1: " << incidentFace << std::endl;
 	incidentFace = (incidentFace + 1) % verH22->vert.getVertexCount();
 	ver[1] = transH22->trans * verH22->vert[incidentFace].position;
+	std::cout << "index2: " << incidentFace << std::endl;
 }
 
 int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
@@ -239,6 +241,8 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 	// d = ax + by - c
 	float d1 = dot(normal, face[0]) - c;
 	float d2 = dot(normal, face[1]) - c;
+	std::cout << normal.x << " " << normal.y << "      " <<
+		face[0].x << " " << face[0].y << "     " << c << std::endl;
 	std::cout << " d1 d2: " << d1 << " " << d2 << std::endl;
 	// If negative (behind plane) clip
 	if (d1 <= 0.0f) out[sp++] = face[0];
@@ -330,9 +334,15 @@ void isCollidingPP(Manifold & man)
 	
 	findIncidentFace(incidentFace, RefPoly, IncPoly, referenceIndex);
 	//312
+	
+	
 	sf::Vector2f ver1 = verH11->vert[referenceIndex].position;
-	ver1 = transH22->trans * ver1;
+	ver1 = transH11->trans * ver1;
+	
+	
 	sf::Vector2f referenceNormal = verH11->normals[referenceIndex];
+	std::cout << "ver1: " << ver1.x << " " << ver1.y << std::endl;
+	
 	
 	//DODA£EM SIDEPLANE!!!!!!!!!!!
 	sf::Vector2f SIDEPLANENormal = verH11->normals[referenceIndex];
@@ -340,17 +350,26 @@ void isCollidingPP(Manifold & man)
 	referenceNormal = ROTMATRIX11 * referenceNormal;
 
 	sf::Transform t90;
-	t90.rotate(270);
+	t90.rotate(90);
 	SIDEPLANENormal = t90 * SIDEPLANENormal;
+	
+	
 	referenceIndex = (referenceIndex + 1) % verH11->vert.getVertexCount();
+	
+	
 	sf::Vector2f ver2 = verH11->vert[referenceIndex].position;
-	ver2 = transH22->trans * ver2;
+	ver2 = transH11->trans * ver2;
+	
+	
+	std::cout << "ver2: " << ver2.x << " " << ver2.y << std::endl;
 
 	std::cout << "sideplanenormal: " << SIDEPLANENormal.x << " " << SIDEPLANENormal.y << std::endl;
+	
+	
 	//DODA£EM SIDEPLANE
 	float refC = dot(referenceNormal, ver1);
 	float negSide = -dot(SIDEPLANENormal, ver1);
-	float posSide = dot(SIDEPLANENormal, ver2);
+	float posSide = dot(-SIDEPLANENormal, ver2);
 
 	std::cout << " weszo3a" << " " <<incidentFace[0].x << " " 
 		<< incidentFace[0].y << " " << incidentFace[1].x << " " 
