@@ -138,22 +138,24 @@ sf::Vector2f GetSupport(VertexArray::Handle verH, sf::Vector2f normal)
 	return ver;
 }
 
-float findLeastPenetration(Manifold &m, int &faceIndex)
+float findLeastPenetration(entityx::Entity en1, entityx::Entity en2, int &faceIndex)
 {
-	Position::Handle posH1 = m.en1.component<Position>(),
-		posH2 = m.en2.component<Position>();
-	VertexArray::Handle verH1 = m.en1.component<VertexArray>(),
-		verH2 = m.en2.component<VertexArray>();
-	Rotation::Handle  rotH1 = m.en1.component<Rotation>(),
-		rotH2 = m.en2.component<Rotation>();
-	Transform::Handle transH1 = m.en1.component<Transform>(),
-		transH2 = m.en2.component<Transform>();
+	Position::Handle posH1 = en1.component<Position>(),
+		posH2 = en2.component<Position>();
+	VertexArray::Handle verH1 = en1.component<VertexArray>(),
+		verH2 = en2.component<VertexArray>();
+	Rotation::Handle  rotH1 = en1.component<Rotation>(),
+		rotH2 = en2.component<Rotation>();
+	Transform::Handle transH1 = en1.component<Transform>(),
+		transH2 = en2.component<Transform>();
 	sf::Transform ROTMATRIX1, ROTMATRIX2;
 	ROTMATRIX1.rotate(rotH1->degree);
 	ROTMATRIX2.rotate(rotH2->degree);
-
-	float bestDistance = FLT_MIN;
+	//std::cout << "finding" << std::endl;
+	
+	float bestDistance = -FLT_MAX;
 	int bestIndex;
+	
 	for (int i = 0; i < verH1->vert.getVertexCount(); ++i)
 	{
 		sf::Vector2f nUnrotated = verH1->normals[i];
@@ -168,7 +170,7 @@ float findLeastPenetration(Manifold &m, int &faceIndex)
 		verA -= posH2->pos;
 		verA = ROTMATRIX2.getInverse() * verA;
 		///
-		std::cout << "ver: " << furtherVerB.x << " " << furtherVerB.y << std::endl;
+		//std::cout << "ver: " << furtherVerB.x << " " << furtherVerB.y << std::endl;
 		float distanseCurr = dot(normal, furtherVerB - verA);
 
 		if (distanseCurr > bestDistance)
@@ -178,7 +180,7 @@ float findLeastPenetration(Manifold &m, int &faceIndex)
 		}
 	}	
 	faceIndex = bestIndex;
-	std::cout << "bd: " << bestDistance << std::endl;
+	//std::cout << "bd: " << bestDistance << std::endl;
 	return bestDistance;
 }
 
@@ -206,18 +208,21 @@ void findIncidentFace(sf::Vector2f *ver, entityx::Entity RefPoly,
 
 	int incidentFace = 0;
 	float minDot = FLT_MAX;
-
+	std::cout << "normal: " << referenceNormal.x << " " << referenceNormal.y << std:: endl;
 	for (int i = 0; i < verH22->vert.getVertexCount(); ++i)
 	{
+		std::cout << "vertex: " <<verH22->vert[i].position.x << " " << verH22->vert[i].position.y << std::endl;
+
 		float dotCurr = dot(referenceNormal, verH22->vert[i].position);
 		if (dotCurr < minDot)
 		{
 			minDot = dotCurr;
 			incidentFace = i;
+			std::cout << "mindot: " << minDot << std::endl;
 		}
 	}
 
-	ver[0] = transH22->trans * verH22->vert[incidentFace].position;
+	ver[0] = transH22->trans * verH22->vert[++incidentFace].position;
 	incidentFace = (incidentFace + 1) % verH22->vert.getVertexCount();
 	ver[1] = transH22->trans * verH22->vert[incidentFace].position;
 }
@@ -234,7 +239,7 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 	// d = ax + by - c
 	float d1 = dot(normal, face[0]) - c;
 	float d2 = dot(normal, face[1]) - c;
-
+	std::cout << " d1 d2: " << d1 << " " << d2 << std::endl;
 	// If negative (behind plane) clip
 	if (d1 <= 0.0f) out[sp++] = face[0];
 	if (d2 <= 0.0f) out[sp++] = face[1];
@@ -253,7 +258,7 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 	face[1] = out[1];
 
 	assert(sp != 3);
-
+	std::cout << "sp: " << sp << std::endl;
 	return sp;
 }
 
@@ -273,19 +278,23 @@ void isCollidingPP(Manifold & man)
 	sf::Transform ROTMATRIX1, ROTMATRIX2;
 	ROTMATRIX1.rotate(rotH1->degree);
 	ROTMATRIX2.rotate(rotH2->degree);
-
+	
+	
+	std::cout << "." << std::endl;
+	
+	
 	int faceIndexA;
-	std::cout << "1" << std::endl;
-	float penetrationA = findLeastPenetration(man, faceIndexA);
+	
+	float penetrationA = findLeastPenetration(man.en1, man.en2, faceIndexA);
 	if (penetrationA >= 0.0f)
 		return;
-	std::cout << " weszo" << std::endl;
+	std::cout << " weszo1" << std::endl;
 	// Check for a separating axis with B's face planes
 	int faceIndexB;
-	float penetrationB = findLeastPenetration(man, faceIndexB);
+	float penetrationB = findLeastPenetration(man.en2, man.en1, faceIndexB);
 	if (penetrationB >= 0.0f)
 		return;
-	std::cout << " weszo" << std::endl;
+	std::cout << " weszo2" << std::endl;
 	int referenceIndex;
 	bool flip;
 
@@ -303,7 +312,7 @@ void isCollidingPP(Manifold & man)
 	ROTMATRIX11.rotate(rotH11->degree);
 	ROTMATRIX22.rotate(rotH22->degree);
 
-	if (BiasGreaterThan(penetrationA, penetrationB))
+	if (!BiasGreaterThan(penetrationA, penetrationB))
 	{
 		RefPoly = man.en1,
 		IncPoly = man.en2;
@@ -324,23 +333,37 @@ void isCollidingPP(Manifold & man)
 	sf::Vector2f ver1 = verH11->vert[referenceIndex].position;
 	ver1 = transH22->trans * ver1;
 	sf::Vector2f referenceNormal = verH11->normals[referenceIndex];
+	
+	//DODA£EM SIDEPLANE!!!!!!!!!!!
+	sf::Vector2f SIDEPLANENormal = verH11->normals[referenceIndex];
 	//moze byc zle
 	referenceNormal = ROTMATRIX11 * referenceNormal;
-	
+
+	sf::Transform t90;
+	t90.rotate(270);
+	SIDEPLANENormal = t90 * SIDEPLANENormal;
 	referenceIndex = (referenceIndex + 1) % verH11->vert.getVertexCount();
 	sf::Vector2f ver2 = verH11->vert[referenceIndex].position;
 	ver2 = transH22->trans * ver2;
 
+	std::cout << "sideplanenormal: " << SIDEPLANENormal.x << " " << SIDEPLANENormal.y << std::endl;
+	//DODA£EM SIDEPLANE
 	float refC = dot(referenceNormal, ver1);
-	float negSide = -dot(referenceNormal, ver1);
-	float posSide = dot(referenceNormal, ver2);
+	float negSide = -dot(SIDEPLANENormal, ver1);
+	float posSide = dot(SIDEPLANENormal, ver2);
 
+	std::cout << " weszo3a" << " " <<incidentFace[0].x << " " 
+		<< incidentFace[0].y << " " << incidentFace[1].x << " " 
+		<< incidentFace[1].y << " " << refC << " " << negSide << " " << posSide <<std::endl;
+	
 	if (clip(-referenceNormal, negSide, incidentFace) < 2)
 		return; // Due to floating point error, possible to not have required points
-	std::cout << " weszo" << std::endl;
+	std::cout << " weszo3" << std::endl;
+	
 	if (clip(referenceNormal, posSide, incidentFace) < 2)
 		return; // Due to floating point error, possible to not have required points
-	std::cout << " weszo" << std::endl;
+	
+	std::cout << " weszo4" << std::endl;
 	man.normal = flip ? -referenceNormal : referenceNormal;
 
 	int clippedPoints = 0;
@@ -364,6 +387,8 @@ void isCollidingPP(Manifold & man)
 		man.penetration /= static_cast<float>(clippedPoints);
 	}
 	man.contactsCount = clippedPoints;
+
+	std::cout << "pen: " << man.penetration << " normal: "<< man.normal.x << " "<< man.normal.y <<std::endl;
 }
 
 
