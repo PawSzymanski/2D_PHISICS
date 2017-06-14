@@ -180,41 +180,41 @@ float findLeastPenetration(entityx::Entity en1, entityx::Entity en2, int &faceIn
 		}
 	}	
 	faceIndex = bestIndex;
-	//std::cout << "bd: " << bestDistance << std::endl;
+	std::cout << "bst index: " << faceIndex << std::endl;
 	return bestDistance;
 }
 
-void findIncidentFace(sf::Vector2f *ver, entityx::Entity RefPoly,
-	entityx::Entity IncPoly, int referenceIndex)
+void findIncidentFace(sf::Vector2f *ver, entityx::Entity &RefPoly,
+	entityx::Entity & IncPoly, int referenceIndex)
 {
-	Position::Handle posH11 = RefPoly.component<Position>(),
-		posH22 = IncPoly.component<Position>();
-	VertexArray::Handle verH11 = RefPoly.component<VertexArray>(),
-		verH22 = IncPoly.component<VertexArray>();
-	Transform::Handle transH11 = RefPoly.component<Transform>(),
-		transH22 = IncPoly.component<Transform>();
-	Rotation::Handle  rotH11 = RefPoly.component<Rotation>(),
-		rotH22 = IncPoly.component<Rotation>();
+	Position::Handle posHRef = RefPoly.component<Position>(),
+		posHInc = IncPoly.component<Position>();
+	VertexArray::Handle verHRef = RefPoly.component<VertexArray>(),
+		verHInc = IncPoly.component<VertexArray>();
+	Transform::Handle transHRef = RefPoly.component<Transform>(),
+		transHInc = IncPoly.component<Transform>();
+	Rotation::Handle  rotHRef = RefPoly.component<Rotation>(),
+		rotHInc = IncPoly.component<Rotation>();
 	
-	sf::Transform ROTMATRIX1, ROTMATRIX2;
-	ROTMATRIX1.rotate(rotH11->degree);
-	ROTMATRIX2.rotate(rotH22->degree);
-	
-	sf::Vector2f referenceNormal = verH11->normals[referenceIndex];
+	sf::Transform ROTMATRIXRef, ROTMATRIXInc;
+	ROTMATRIXRef.rotate(rotHRef->degree);
+	ROTMATRIXInc.rotate(rotHInc->degree);
+	//-
+	sf::Vector2f referenceNormal = verHRef->normals[referenceIndex];
 	//swiat
-	referenceNormal = ROTMATRIX1 * referenceNormal;
+	referenceNormal = ROTMATRIXRef * referenceNormal;
 	//B
-	referenceNormal = ROTMATRIX2.getInverse() * referenceNormal;
+	referenceNormal = ROTMATRIXInc.getInverse() * referenceNormal;
 
 	int incidentFace = 0;
 	float minDot = FLT_MAX;
 	std::cout << "normal: " << referenceNormal.x << " " << referenceNormal.y << std:: endl;
-	std::cout << "incydent amount: " << verH22->vert.getVertexCount() << std::endl;
-	for (int i = 0; i < verH22->vert.getVertexCount(); ++i)
+	std::cout << "incydent amount: " << verHInc->vert.getVertexCount() << std::endl;
+	for (int i = 0; i < verHInc->vert.getVertexCount(); ++i)
 	{
-		std::cout << "inc vertex: " <<verH22->vert[i].position.x << " " << verH22->vert[i].position.y << std::endl;
+		//std::cout << "inc vertex: " <<verHInc->vert[i].position.x << " " << verH22->vert[i].position.y << std::endl;
 		//DODLA£EM "MINUS" DO REF
-		float dotCurr = dot(referenceNormal, verH22->normals[i]);
+		float dotCurr = dot(referenceNormal, verHInc->normals[i]);
 		if (dotCurr < minDot)
 		{
 			minDot = dotCurr;
@@ -223,10 +223,10 @@ void findIncidentFace(sf::Vector2f *ver, entityx::Entity RefPoly,
 		}
 	}
 
-	ver[0] = transH22->trans * verH22->vert[incidentFace].position;
+	ver[0] = transHInc->trans * verHInc->vert[incidentFace].position;
 	std::cout << "inc index1: " << incidentFace << std::endl;
-	incidentFace = (incidentFace + 1) % verH22->vert.getVertexCount();
-	ver[1] = transH22->trans * verH22->vert[incidentFace].position;
+	incidentFace = (incidentFace + 1) % verHInc->vert.getVertexCount();
+	ver[1] = transHInc->trans * verHInc->vert[incidentFace].position;
 	std::cout << "inc index2: " << incidentFace << std::endl;
 }
 
@@ -242,7 +242,7 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 	// d = ax + by - c
 	float d1 = dot(normal, face[0]) - c;
 	float d2 = dot(normal, face[1]) - c;
-	std::cout << normal.x << " " << normal.y << "      " <<
+	std::cout <<"clip data nor, fac, c"<< normal.x << " " << normal.y << "      " <<
 		face[0].x << " " << face[0].y << "     " << c << std::endl;
 	std::cout << " d1 d2: " << d1 << " " << d2 << std::endl;
 	// If negative (behind plane) clip
@@ -257,7 +257,6 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 		out[sp] = face[0] + alpha * (face[1] - face[0]);
 		++sp;
 	}
-
 	// Assign our new converted values
 	face[0] = out[0];
 	face[1] = out[1];
@@ -284,10 +283,8 @@ void isCollidingPP(Manifold & man)
 	ROTMATRIX1.rotate(rotH1->degree);
 	ROTMATRIX2.rotate(rotH2->degree);
 	
-	
 	std::cout << "." << std::endl;
-	
-	
+		
 	int faceIndexA;
 	
 	float penetrationA = findLeastPenetration(man.en1, man.en2, faceIndexA);
@@ -303,11 +300,7 @@ void isCollidingPP(Manifold & man)
 	int referenceIndex;
 	bool flip;
 
-	entityx::Entity RefPoly = man.en1,
-		IncPoly = man.en2;
-	
-
-
+	entityx::Entity RefPoly, IncPoly;
 	if (!BiasGreaterThan(penetrationA, penetrationB))
 	{
 		RefPoly = man.en1,
@@ -323,54 +316,53 @@ void isCollidingPP(Manifold & man)
 		flip = true;
 	}
 
-	Position::Handle posH11 = RefPoly.component<Position>(),
-		posH22 = IncPoly.component<Position>();
-	VertexArray::Handle verH11 = RefPoly.component<VertexArray>(),
-		verH22 = IncPoly.component<VertexArray>();
-	Transform::Handle transH11 = RefPoly.component<Transform>(),
-		transH22 = IncPoly.component<Transform>();
-	Rotation::Handle  rotH11 = RefPoly.component<Rotation>(),
-		rotH22 = IncPoly.component<Rotation>();
+	Position::Handle posHRef = RefPoly.component<Position>(),
+		posHInc = IncPoly.component<Position>();
+	VertexArray::Handle verHRef = RefPoly.component<VertexArray>(),
+		verHInc = IncPoly.component<VertexArray>();
+	Transform::Handle transHRef = RefPoly.component<Transform>(),
+		transHInc = IncPoly.component<Transform>();
+	Rotation::Handle  rotHRef = RefPoly.component<Rotation>(),
+		rotHInc = IncPoly.component<Rotation>();
 
 
-	sf::Transform ROTMATRIX11, ROTMATRIX22;
-	ROTMATRIX11.rotate(rotH11->degree);
-	ROTMATRIX22.rotate(rotH22->degree);
+	sf::Transform ROTMATRIXRef, ROTMATRIXInc;
+	ROTMATRIXRef.rotate(rotHRef->degree);
+	ROTMATRIXInc.rotate(rotHInc->degree);
+
 	sf::Vector2f incidentFace[2];
 	
 	findIncidentFace(incidentFace, RefPoly, IncPoly, referenceIndex);
 	//312
 	
+	incidentFace[0] = transHRef->trans.getInverse() * incidentFace[0];
+	incidentFace[1] = transHRef->trans.getInverse() * incidentFace[1];
 	
-	sf::Vector2f ver1 = verH11->vert[referenceIndex].position;
-	ver1 = transH11->trans * ver1;
+	sf::Vector2f ver1 = verHRef->vert[referenceIndex].position;
+	//ver1 = transHRef->trans * ver1;
 	
+	referenceIndex = (referenceIndex + 1) % verHRef->vert.getVertexCount();
+
+	sf::Vector2f ver2 = verHRef->vert[referenceIndex].position;
+	//ver2 = transHRef->trans * ver2;
 	
-	sf::Vector2f referenceNormal = verH11->normals[referenceIndex];
+	sf::Vector2f referenceNormal = verHRef->normals[referenceIndex];
+	//referenceNormal = ROTMATRIXRef * referenceNormal;
 	std::cout << "ref ver1: " << ver1.x << " " << ver1.y << std::endl;
 	
 	
 	//DODA£EM SIDEPLANE!!!!!!!!!!!
 	//sf::Vector2f SIDEPLANENormal = verH11->normals[referenceIndex];
 	//moze byc zle
-	referenceNormal = ROTMATRIX11 * referenceNormal;
 
 	//sf::Transform t90;
 	//t90.rotate(90);
 	//SIDEPLANENormal = t90 * SIDEPLANENormal;
-	
-	
-	referenceIndex = (referenceIndex + 1) % verH11->vert.getVertexCount();
-	
-	
-	sf::Vector2f ver2 = verH11->vert[referenceIndex].position;
-	ver2 = transH11->trans * ver2;
-	
+
 	
 	std::cout << "ref ver2: " << ver2.x << " " << ver2.y << std::endl;
-	std::cout << "ref amount: " << verH11->vert.getVertexCount() << std::endl;
+	std::cout << "ref amount: " << verHRef->vert.getVertexCount() << std::endl;
 	//std::cout << "sideplanenormal: " << SIDEPLANENormal.x << " " << SIDEPLANENormal.y << std::endl;
-	
 	
 	//DODA£EM SIDEPLANE
 	float refC = dot(referenceNormal, ver1);
@@ -381,12 +373,12 @@ void isCollidingPP(Manifold & man)
 		//<< incidentFace[0].y << " " << incidentFace[1].x << " " << incidentFace[1].y << " " 
 		<< refC <<std::endl;
 	
-	if (clip(-referenceNormal, refC , incidentFace) < 2)
+	if (clip(referenceNormal, refC , incidentFace) < 2)
 		return; // Due to floating point error, possible to not have required points
 	std::cout << " weszo3" << std::endl;
 	
-	if (clip(referenceNormal, refC , incidentFace) < 2)
-		return; // Due to floating point error, possible to not have required points
+	//if (clip(referenceNormal, refC , incidentFace) < 2)
+		//return; // Due to floating point error, possible to not have required points
 	
 	std::cout << " weszo4" << std::endl;
 	man.normal = flip ? -referenceNormal : referenceNormal;
@@ -396,22 +388,27 @@ void isCollidingPP(Manifold & man)
 	float separation = dot(referenceNormal, incidentFace[0]) - refC;
 	if (separation <= 0.0f)
 	{
-		man.contacts[clippedPoints] = incidentFace[0];
+		man.contacts[clippedPoints] = transHRef->trans * incidentFace[0];
 		man.penetration = -separation;
+		++clippedPoints;
 	}
 	else
 		man.penetration = 0.f;
 
-	separation = dot(referenceNormal, incidentFace[1]);
+	separation = dot(referenceNormal, incidentFace[1]) - refC;
 
 	if (separation <= 0.0f)
 	{
-		man.contacts[clippedPoints] = incidentFace[1];
+		man.contacts[clippedPoints] = transHRef->trans * incidentFace[1];
 		man.penetration += separation;
 		++clippedPoints;
 		man.penetration /= static_cast<float>(clippedPoints);
 	}
 	man.contactsCount = clippedPoints;
+
+	referenceNormal = ROTMATRIXRef * referenceNormal;
+	//B
+	referenceNormal = ROTMATRIXInc.getInverse() * referenceNormal;
 
 	std::cout << "pen: " << man.penetration << " normal: "<< man.normal.x << " "<< man.normal.y <<std::endl;
 }
