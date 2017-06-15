@@ -398,37 +398,7 @@ void isCollidingPP(Manifold & man)
 
 	///	std::cout << "pen: " << man.penetration << " normal: "<< man.normal.x << " "<< man.normal.y <<std::endl;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//!!!!!!!!!!!!!!!!!!!!!!!!   OLD CODE  !!!!!!!!!!!!!!!!!!!!!!!!
 
 /*
 
