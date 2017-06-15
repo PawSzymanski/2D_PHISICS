@@ -242,8 +242,8 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 	// d = ax + by - c
 	float d1 = dot(normal, face[0]) - c;
 	float d2 = dot(normal, face[1]) - c;
-	std::cout <<"clip data nor, fac, c"<< normal.x << " " << normal.y << "      " <<
-		face[0].x << " " << face[0].y << "     " << c << std::endl;
+	std::cout << "clip data nor, fac0, face1, c" << std::endl << normal.x << " " << normal.y << std::endl <<
+		face[0].x << " " << face[0].y << std::endl << face[1].x << face[1].y << std::endl << "c: " << c << std::endl;
 	std::cout << " d1 d2: " << d1 << " " << d2 << std::endl;
 	// If negative (behind plane) clip
 	if (d1 <= 0.0f) out[sp++] = face[0];
@@ -260,7 +260,7 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 	// Assign our new converted values
 	face[0] = out[0];
 	face[1] = out[1];
-
+	std::cout << "bef sp" << std::endl;
 	assert(sp != 3);
 	std::cout << "sp: " << sp << std::endl;
 	return sp;
@@ -301,7 +301,7 @@ void isCollidingPP(Manifold & man)
 	bool flip;
 
 	entityx::Entity RefPoly, IncPoly;
-	if (!BiasGreaterThan(penetrationA, penetrationB))
+	if (BiasGreaterThan(penetrationA, penetrationB))
 	{
 		RefPoly = man.en1,
 		IncPoly = man.en2;
@@ -340,24 +340,28 @@ void isCollidingPP(Manifold & man)
 	
 	sf::Vector2f ver1 = verHRef->vert[referenceIndex].position;
 	//ver1 = transHRef->trans * ver1;
+	std::cout << "ref index1: " << referenceIndex << std::endl;
+	sf::Vector2f referenceNormal = verHRef->normals[referenceIndex];
 	
 	referenceIndex = (referenceIndex + 1) % verHRef->vert.getVertexCount();
-
+    
+	std::cout << "ref index2: " << referenceIndex << std::endl;
+	
 	sf::Vector2f ver2 = verHRef->vert[referenceIndex].position;
 	//ver2 = transHRef->trans * ver2;
 	
-	sf::Vector2f referenceNormal = verHRef->normals[referenceIndex];
+	
 	//referenceNormal = ROTMATRIXRef * referenceNormal;
 	std::cout << "ref ver1: " << ver1.x << " " << ver1.y << std::endl;
 	
 	
 	//DODA£EM SIDEPLANE!!!!!!!!!!!
-	//sf::Vector2f SIDEPLANENormal = verH11->normals[referenceIndex];
+	sf::Vector2f SIDEPLANENormal = verHRef->normals[referenceIndex];
 	//moze byc zle
 
-	//sf::Transform t90;
-	//t90.rotate(90);
-	//SIDEPLANENormal = t90 * SIDEPLANENormal;
+	sf::Transform t90;
+	t90.rotate(90);
+	SIDEPLANENormal = t90 * SIDEPLANENormal;
 
 	
 	std::cout << "ref ver2: " << ver2.x << " " << ver2.y << std::endl;
@@ -365,22 +369,29 @@ void isCollidingPP(Manifold & man)
 	//std::cout << "sideplanenormal: " << SIDEPLANENormal.x << " " << SIDEPLANENormal.y << std::endl;
 	
 	//DODA£EM SIDEPLANE
+
+
+
+	std::cout << "begginig fef normal: " << referenceNormal.x << " " << referenceNormal.y << std::endl;
+
+
 	float refC = dot(referenceNormal, ver1);
-	//float negSide = -dot(SIDEPLANENormal, ver1);
-	//float posSide = dot(-SIDEPLANENormal, ver2);
+	float negSide = -dot(SIDEPLANENormal, ver1);
+	float posSide = dot(-SIDEPLANENormal, ver2);
 
 	std::cout << " weszo3a" << " "// <<incidentFace[0].x << " " 
 		//<< incidentFace[0].y << " " << incidentFace[1].x << " " << incidentFace[1].y << " " 
 		<< refC <<std::endl;
 	
-	if (clip(referenceNormal, refC , incidentFace) < 2)
+	if (clip(referenceNormal, negSide , incidentFace) < 2)
 		return; // Due to floating point error, possible to not have required points
-	std::cout << " weszo3" << std::endl;
 	
-	//if (clip(referenceNormal, refC , incidentFace) < 2)
-		//return; // Due to floating point error, possible to not have required points
+	std::cout << " !!!!!!!!!weszo3" << std::endl;
 	
-	std::cout << " weszo4" << std::endl;
+	if (clip(referenceNormal, posSide , incidentFace) < 2)
+		return; // Due to floating point error, possible to not have required points
+	
+	std::cout << " !!!!!!!!!!!!!weszo4" << std::endl;
 	man.normal = flip ? -referenceNormal : referenceNormal;
 
 	int clippedPoints = 0;
@@ -406,9 +417,7 @@ void isCollidingPP(Manifold & man)
 	}
 	man.contactsCount = clippedPoints;
 
-	referenceNormal = ROTMATRIXRef * referenceNormal;
-	//B
-	referenceNormal = ROTMATRIXInc.getInverse() * referenceNormal;
+	man.normal = ROTMATRIXRef * man.normal;
 
 	std::cout << "pen: " << man.penetration << " normal: "<< man.normal.x << " "<< man.normal.y <<std::endl;
 }
