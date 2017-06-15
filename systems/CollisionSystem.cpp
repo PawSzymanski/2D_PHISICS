@@ -102,6 +102,7 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev)
 		if (vecLenghtSq(frictionImpulse) > 0.001f)
 		m.force += frictionImpulse;
 	}
+//	std::cout << "force added" << i << ": " << m.force.x << " " << m.force.y << std::endl;
 	m.force /= static_cast<float>(m.contactsCount);
 	ev.emit<ApplyForceEvent>(contact2, m.force, m.en2);
 	ev.emit<ApplyForceEvent>(contact1, -m.force, m.en1);

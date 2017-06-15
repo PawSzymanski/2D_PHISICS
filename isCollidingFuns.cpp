@@ -67,7 +67,7 @@ void isCollidingCP(Manifold & man)
 	//system("pause");
 	if (separation < EPSILON)
 	{
-		std::cout << "ŒRODEK" << std::endl;
+	///	std::cout << "ŒRODEK" << std::endl;
 		man.contactsCount = 1;
 		man.normal = rotMatrix * verH2->normals[index];
 		man.contacts[0] = man.normal * cirH1->r + posH1->pos;
@@ -180,7 +180,7 @@ float findLeastPenetration(entityx::Entity en1, entityx::Entity en2, int &faceIn
 		}
 	}	
 	faceIndex = bestIndex;
-	std::cout << "bst index: " << faceIndex << std::endl;
+	///std::cout << "bst index: " << faceIndex << std::endl;
 	return bestDistance;
 }
 
@@ -208,8 +208,8 @@ void findIncidentFace(sf::Vector2f *ver, entityx::Entity &RefPoly,
 
 	int incidentFace = 0;
 	float minDot = FLT_MAX;
-	std::cout << "normal: " << referenceNormal.x << " " << referenceNormal.y << std:: endl;
-	std::cout << "incydent amount: " << verHInc->vert.getVertexCount() << std::endl;
+///	std::cout << "normal: " << referenceNormal.x << " " << referenceNormal.y << std:: endl;
+///	std::cout << "incydent amount: " << verHInc->vert.getVertexCount() << std::endl;
 	for (int i = 0; i < verHInc->vert.getVertexCount(); ++i)
 	{
 		//std::cout << "inc vertex: " <<verHInc->vert[i].position.x << " " << verH22->vert[i].position.y << std::endl;
@@ -219,15 +219,15 @@ void findIncidentFace(sf::Vector2f *ver, entityx::Entity &RefPoly,
 		{
 			minDot = dotCurr;
 			incidentFace = i;
-			std::cout << "mindot: " << minDot << std::endl  ;
+			///std::cout << "mindot: " << minDot << std::endl  ;
 		}
 	}
 
 	ver[0] = transHInc->trans * verHInc->vert[incidentFace].position;
-	std::cout << "inc index1: " << incidentFace << std::endl;
+	///std::cout << "inc index1: " << incidentFace << std::endl;
 	incidentFace = (incidentFace + 1) % verHInc->vert.getVertexCount();
 	ver[1] = transHInc->trans * verHInc->vert[incidentFace].position;
-	std::cout << "inc index2: " << incidentFace << std::endl;
+	///std::cout << "inc index2: " << incidentFace << std::endl;
 }
 
 int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
@@ -242,9 +242,9 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 	// d = ax + by - c
 	float d1 = dot(normal, face[0]) - c;
 	float d2 = dot(normal, face[1]) - c;
-	std::cout << "clip data nor, fac0, face1, c" << std::endl << normal.x << " " << normal.y << std::endl <<
-		face[0].x << " " << face[0].y << std::endl << face[1].x << face[1].y << std::endl << "c: " << c << std::endl;
-	std::cout << " d1 d2: " << d1 << " " << d2 << std::endl;
+	///std::cout << "clip data nor, fac0, face1, c" << std::endl << normal.x << " " << normal.y << std::endl <<
+	///	face[0].x << " " << face[0].y << std::endl << face[1].x << face[1].y << std::endl << "c: " << c << std::endl;
+	///std::cout << " d1 d2: " << d1 << " " << d2 << std::endl;
 	// If negative (behind plane) clip
 	if (d1 <= 0.0f) out[sp++] = face[0];
 	if (d2 <= 0.0f) out[sp++] = face[1];
@@ -260,9 +260,9 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 	// Assign our new converted values
 	face[0] = out[0];
 	face[1] = out[1];
-	std::cout << "bef sp" << std::endl;
+	///std::cout << "bef sp" << std::endl;
 	assert(sp != 3);
-	std::cout << "sp: " << sp << std::endl;
+	///std::cout << "sp: " << sp << std::endl;
 	return sp;
 }
 
@@ -283,20 +283,20 @@ void isCollidingPP(Manifold & man)
 	ROTMATRIX1.rotate(rotH1->degree);
 	ROTMATRIX2.rotate(rotH2->degree);
 	
-	std::cout << "." << std::endl;
+	///std::cout << "." << std::endl;
 		
 	int faceIndexA;
 	
 	float penetrationA = findLeastPenetration(man.en1, man.en2, faceIndexA);
 	if (penetrationA >= 0.0f)
 		return;
-	std::cout << " weszo1" << std::endl;
+	///std::cout << " weszo1" << std::endl;
 	// Check for a separating axis with B's face planes
 	int faceIndexB;
 	float penetrationB = findLeastPenetration(man.en2, man.en1, faceIndexB);
 	if (penetrationB >= 0.0f)
 		return;
-	std::cout << " weszo2" << std::endl;
+	///std::cout << " weszo2" << std::endl;
 	int referenceIndex;
 	bool flip;
 
@@ -340,78 +340,80 @@ void isCollidingPP(Manifold & man)
 	
 	sf::Vector2f ver1 = verHRef->vert[referenceIndex].position;
 	//ver1 = transHRef->trans * ver1;
-	std::cout << "ref index1: " << referenceIndex << std::endl;
+	///std::cout << "ref index1: " << referenceIndex << std::endl;
 	sf::Vector2f referenceNormal = verHRef->normals[referenceIndex];
 	
 	referenceIndex = (referenceIndex + 1) % verHRef->vert.getVertexCount();
     
-	std::cout << "ref index2: " << referenceIndex << std::endl;
+	///std::cout << "ref index2: " << referenceIndex << std::endl;
 	
 	sf::Vector2f ver2 = verHRef->vert[referenceIndex].position;
 	//ver2 = transHRef->trans * ver2;
 	
 	
 	//referenceNormal = ROTMATRIXRef * referenceNormal;
-	std::cout << "ref ver1: " << ver1.x << " " << ver1.y << std::endl;
+	///std::cout << "ref ver1: " << ver1.x << " " << ver1.y << std::endl;
 	
 	
 	//DODA£EM SIDEPLANE!!!!!!!!!!!
-	sf::Vector2f SIDEPLANENormal = verHRef->normals[referenceIndex];
+	//sf::Vector2f SIDEPLANENormal = verHRef->normals[referenceIndex];
 	//moze byc zle
 
-	sf::Transform t90;
-	t90.rotate(90);
-	SIDEPLANENormal = t90 * SIDEPLANENormal;
+	//sf::Transform t90;
+	//t90.rotate(90);
+	//SIDEPLANENormal = t90 * SIDEPLANENormal;
 
 	
-	std::cout << "ref ver2: " << ver2.x << " " << ver2.y << std::endl;
-	std::cout << "ref amount: " << verHRef->vert.getVertexCount() << std::endl;
+	///std::cout << "ref ver2: " << ver2.x << " " << ver2.y << std::endl;
+	///std::cout << "ref amount: " << verHRef->vert.getVertexCount() << std::endl;
 	//std::cout << "sideplanenormal: " << SIDEPLANENormal.x << " " << SIDEPLANENormal.y << std::endl;
 	
 	//DODA£EM SIDEPLANE
 
 
 
-	std::cout << "begginig fef normal: " << referenceNormal.x << " " << referenceNormal.y << std::endl;
+	///std::cout << "begginig fef normal: " << referenceNormal.x << " " << referenceNormal.y << std::endl;
 
 
 	float refC = dot(referenceNormal, ver1);
-	float negSide = -dot(SIDEPLANENormal, ver1);
-	float posSide = dot(-SIDEPLANENormal, ver2);
+	//float negSide = -dot(SIDEPLANENormal, ver1);
+	//float posSide = dot(-SIDEPLANENormal, ver2);
 
-	std::cout << " weszo3a" << " "// <<incidentFace[0].x << " " 
-		//<< incidentFace[0].y << " " << incidentFace[1].x << " " << incidentFace[1].y << " " 
-		<< refC <<std::endl;
+	///std::cout << " weszo3a" << " "// <<incidentFace[0].x << " " 
+	///	<< incidentFace[0].y << " " << incidentFace[1].x << " " << incidentFace[1].y << " " 
+	///	<< refC <<std::endl;
 	
-	if (clip(referenceNormal, negSide , incidentFace) < 2)
+	if (clip(referenceNormal, refC , incidentFace) < 2)
 		return; // Due to floating point error, possible to not have required points
 	
-	std::cout << " !!!!!!!!!weszo3" << std::endl;
+///	std::cout << " !!!!!!!!!weszo3" << std::endl;
 	
-	if (clip(referenceNormal, posSide , incidentFace) < 2)
+	if (clip(referenceNormal, refC , incidentFace) < 2)
 		return; // Due to floating point error, possible to not have required points
 	
-	std::cout << " !!!!!!!!!!!!!weszo4" << std::endl;
+///	std::cout << " !!!!!!!!!!!!!weszo4" << std::endl;
 	man.normal = flip ? -referenceNormal : referenceNormal;
 
 	int clippedPoints = 0;
 
 	float separation = dot(referenceNormal, incidentFace[0]) - refC;
-	if (separation <= 0.0f)
+
+///	std::cout << "separaton1 :" << separation << std::endl;
+	if (separation <= -EPSILON)
 	{
 		man.contacts[clippedPoints] = transHRef->trans * incidentFace[0];
 		man.penetration = -separation;
 		++clippedPoints;
-	}
+	} 
 	else
 		man.penetration = 0.f;
 
 	separation = dot(referenceNormal, incidentFace[1]) - refC;
-
-	if (separation <= 0.0f)
+	///std::cout << "separaton2 :" << separation << std::endl;
+	if (separation <= -EPSILON)
 	{
 		man.contacts[clippedPoints] = transHRef->trans * incidentFace[1];
-		man.penetration += separation;
+		man.penetration += -separation;
 		++clippedPoints;
 		man.penetration /= static_cast<float>(clippedPoints);
 	}
@@ -419,7 +421,13 @@ void isCollidingPP(Manifold & man)
 
 	man.normal = ROTMATRIXRef * man.normal;
 
-	std::cout << "pen: " << man.penetration << " normal: "<< man.normal.x << " "<< man.normal.y <<std::endl;
+	///std::cout << "contact points: " << (int)man.contactsCount << std::endl;
+
+///	std::cout << "contact0: " << man.contacts[0].x << " " << man.contacts[0].y << std::endl;
+
+///	std::cout << "contact1: " << man.contacts[1].x << " " << man.contacts[1].y << std::endl;
+
+///	std::cout << "pen: " << man.penetration << " normal: "<< man.normal.x << " "<< man.normal.y <<std::endl;
 }
 
 

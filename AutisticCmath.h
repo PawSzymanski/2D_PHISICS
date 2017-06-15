@@ -2,7 +2,7 @@
 #include <SFML\Graphics.hpp>
 #include <cmath>
 
-const float EPSILON = 0.01f;
+const float EPSILON = 0.000001f;
 inline float abs_f(float);
 
 inline sf::Vector2f crossVS(const sf::Vector2f &v, float a);

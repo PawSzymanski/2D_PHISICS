@@ -21,13 +21,13 @@ MainLoop::MainLoop()
 
 	sf::VertexArray long_rect(sf::TriangleFan, 4);
 
-	long_rect[0].position = sf::Vector2f(-8.5, -0.2);
+	long_rect[0].position = sf::Vector2f(-9.5, -0.2);
 	long_rect[0].color = sf::Color::Black;
-	long_rect[1].position = sf::Vector2f(8.5, -0.2);
+	long_rect[1].position = sf::Vector2f(9.5, -0.2);
 	long_rect[1].color = sf::Color::Black;
-	long_rect[2].position = sf::Vector2f(8.5, 0.2);
+	long_rect[2].position = sf::Vector2f(9.5, 0.2);
 	long_rect[2].color = sf::Color::Black;
-	long_rect[3].position = sf::Vector2f(-8.5, 0.2);
+	long_rect[3].position = sf::Vector2f(-9.5, 0.2);
 	long_rect[3].color = sf::Color::Black;
 
 	sf::VertexArray potato(sf::TriangleFan, 6);
@@ -58,8 +58,8 @@ MainLoop::MainLoop()
 	//createPolygon(sf::Vector2f(10, 7), sf::Vector2f(0, 0), 0, 1, 2);
 
 	createPolygon(sf::Vector2f(8.75, 10.15), sf::Vector2f(0, 0), 0, 0, 1);
-	//createPolygon(sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
-	//createPolygon(sf::Vector2f(17, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
+	createPolygon(sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
+	createPolygon(sf::Vector2f(17, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
 }
 
 MainLoop::~MainLoop()
