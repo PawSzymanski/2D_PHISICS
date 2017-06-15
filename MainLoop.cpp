@@ -15,9 +15,9 @@ MainLoop::MainLoop()
 	triangle[0].position = sf::Vector2f(-0.5, -0.5);
 	triangle[0].color = sf::Color::Red;
 	triangle[1].position = sf::Vector2f(0.5, -0.5);
-	triangle[1].color = sf::Color::Red;
+	triangle[1].color = sf::Color::Yellow;
 	triangle[2].position = sf::Vector2f(0, 1);
-	triangle[2].color = sf::Color::Red;
+	triangle[2].color = sf::Color::White;
 
 	sf::VertexArray long_rect(sf::TriangleFan, 4);
 
