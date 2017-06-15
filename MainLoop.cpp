@@ -66,8 +66,6 @@ MainLoop::~MainLoop()
 {
 }
 
-
-
 void MainLoop::setSystems()
 {
 	ex.systems.add<RenderSystem>(window);
@@ -99,9 +97,7 @@ void MainLoop::loop()
 
 	int poligonsCount = 0;
 	while (window.isOpen())
-	{
-
-		
+	{	
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 		{
 			createCircle(mouse_posf, sf::Vector2f(0, 0), 1, sf::Color::Green, 0.25f);
@@ -111,8 +107,6 @@ void MainLoop::loop()
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-
-
 			if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
 				window.close();
 			else if (event.type == sf::Event::MouseMoved)
@@ -120,12 +114,12 @@ void MainLoop::loop()
 			sf::Vector2i mouse_pos = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
 				mouse_posf = window.mapPixelToCoords(mouse_pos, camera);					
 			}
-			else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+			/*else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
 			{
 				createCircle(mouse_posf, sf::Vector2f(0, 0), 1, sf::Color::Green, 0.25f);
 				++poligonsCount;
 				std::cout << "obj Count: " << poligonsCount << std::endl;
-			}
+			}*/
 			if (event.type == sf::Event::KeyPressed)
 			{
 				while (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
@@ -141,10 +135,8 @@ void MainLoop::loop()
 					createPolygon(mouse_posf, sf::Vector2f(0, 0), 0, 5, 2);
 					++poligonsCount;
 					std::cout << "obj Count: " << poligonsCount << std::endl;
-				}
-			
+				}	
 			}
-
 		}
 		time += clock.restart();
 		int counter = 0;
@@ -160,7 +152,6 @@ void MainLoop::loop()
 		}
 		update(0.01f);
 		render();
-
 		float fps = 1.0f / fpsclock.restart().asSeconds();
 		// std::cout<<"FPS: "<<fps<<" en:"<<ex.entities.size()<<std::endl;
 	}
