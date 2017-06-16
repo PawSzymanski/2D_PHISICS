@@ -19,7 +19,7 @@ class MainLoop
 	entityx::EntityX ex;
 	Container vertCont;
 	sf::Vector2f mouse_posf;
-
+	sf::Vector2f gravity;
 public:
 	
 	MainLoop();

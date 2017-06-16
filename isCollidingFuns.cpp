@@ -133,7 +133,6 @@ sf::Vector2f GetSupport(VertexArray::Handle verH, sf::Vector2f normal)
 			bestVertex = i;
 		}
 	}
-	
 	sf::Vector2f ver = verH->vert[bestVertex].position;
 	return ver;
 }
@@ -208,12 +207,13 @@ void findIncidentFace(sf::Vector2f *ver, entityx::Entity &RefPoly,
 
 	int incidentFace = 0;
 	float minDot = FLT_MAX;
+
 ///	std::cout << "normal: " << referenceNormal.x << " " << referenceNormal.y << std:: endl;
 ///	std::cout << "incydent amount: " << verHInc->vert.getVertexCount() << std::endl;
+
 	for (int i = 0; i < verHInc->vert.getVertexCount(); ++i)
 	{
 		//std::cout << "inc vertex: " <<verHInc->vert[i].position.x << " " << verH22->vert[i].position.y << std::endl;
-		//DODLA£EM "MINUS" DO REF
 		float dotCurr = dot(referenceNormal, verHInc->normals[i]);
 		if (dotCurr < minDot)
 		{
@@ -239,16 +239,20 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 
 	// Retrieve distances from each endpoint to the line
 	// d = ax + by - c
+
 	float d1 = dot(normal, face[0]) - c;
 	float d2 = dot(normal, face[1]) - c;
+	
 	///std::cout << "clip data nor, fac0, face1, c" << std::endl << normal.x << " " << normal.y << std::endl <<
 	///	face[0].x << " " << face[0].y << std::endl << face[1].x << face[1].y << std::endl << "c: " << c << std::endl;
 	///std::cout << " d1 d2: " << d1 << " " << d2 << std::endl;
 	// If negative (behind plane) clip
+
 	if (d1 <= 0.0f) out[sp++] = face[0];
 	if (d2 <= 0.0f) out[sp++] = face[1];
 
 	// If the points are on different sides of the plane
+
 	if (d1 * d2 < 0.0f) // less than to ignore -0.0f
 	{
 		// Push interesection point

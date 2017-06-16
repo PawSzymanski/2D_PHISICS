@@ -7,9 +7,10 @@
 
 struct Position : public entityx::Component<Position>
 {
-	Position(sf::Vector2f & pos)
-		:pos(pos) {}
+	Position(sf::Vector2f & pos) 
+		:pos(pos), prevPos(pos) {}
 	sf::Vector2f pos;
+	sf::Vector2f prevPos;
 };
 
 struct Rotation : public entityx::Component<Rotation>
@@ -133,4 +134,11 @@ struct Type : entityx::Component<Type>
 		CIRCLE, 
 		POLYGON
 	};
+};
+
+struct IsResting : entityx::Component<IsResting>
+{
+	IsResting() : isIt(false)
+	{}
+		bool isIt;
 };

@@ -11,14 +11,15 @@
 class CollisionSystem : public entityx::System<CollisionSystem>
 {
 
+	sf::Vector2f &gravity;
 public:
 	void(*dispatch[2][2])(Manifold& m);
 
-	CollisionSystem();
+	CollisionSystem(sf::Vector2f &);
 
 	void PositionalCorrection(Manifold & m);
 
-	void ResolveCollision(Manifold & m, entityx::EventManager & ev);
+	void ResolveCollision(Manifold & m, entityx::EventManager & ev, float dt);
 
 	void update(entityx::EntityManager & en, entityx::EventManager & ev, double dt);
 

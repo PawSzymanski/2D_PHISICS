@@ -1,7 +1,7 @@
 #include "MainLoop.h"
 
 
-MainLoop::MainLoop()  
+MainLoop::MainLoop() : gravity(0.0f, 9.8)
 {
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
@@ -45,10 +45,22 @@ MainLoop::MainLoop()
 	potato[5].position = sf::Vector2f(-0.8, -0.0);
 	potato[5].color = sf::Color::Yellow;
 
+	sf::VertexArray square(sf::TriangleFan, 4);
+
+	square[0].position = sf::Vector2f(-0.5, -0.5);
+	square[0].color = sf::Color::Black;
+	square[1].position = sf::Vector2f(0.5, -0.5);
+	square[1].color = sf::Color::Black;
+	square[2].position = sf::Vector2f(0.5, 0.5);
+	square[2].color = sf::Color::White;
+	square[3].position = sf::Vector2f(-0.5, 0.5);
+	square[3].color = sf::Color::White;
+
 
 	vertCont.addPoly(triangle, 3);
 	vertCont.addPoly(long_rect, 4);
 	vertCont.addPoly(potato, 6);
+	vertCont.addPoly(square, 4);
 
 
 	//createCircle(sf::Vector2f(5, 1.8), sf::Vector2f(0, 0), 1, sf::Color::Green, 0.5f);
@@ -58,8 +70,17 @@ MainLoop::MainLoop()
 	//createPolygon(sf::Vector2f(10, 7), sf::Vector2f(0, 0), 0, 1, 2);
 
 	createPolygon(sf::Vector2f(8.75, 10.15), sf::Vector2f(0, 0), 0, 0, 1);
-	createPolygon(sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
-	createPolygon(sf::Vector2f(17, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
+	//createPolygon(sf::Vector2f(8.75, 9.64), sf::Vector2f(0, 0), 0, 1, 3);
+	//createPolygon(sf::Vector2f(8.75, 8.63), sf::Vector2f(0, 0), 0, 1, 3);
+	//createPolygon(sf::Vector2f(8.75, 7.62), sf::Vector2f(0, 0), 0, 1, 3);
+	//createPolygon(sf::Vector2f(8.75, 6.61), sf::Vector2f(0, 0), 0, 1, 3);
+	//createPolygon(sf::Vector2f(8.75, 5.60), sf::Vector2f(0, 0), 0, 1, 3);
+	//createPolygon(sf::Vector2f(8.75, 4.59), sf::Vector2f(0, 0), 0, 1, 3);
+	//createPolygon(sf::Vector2f(8.75, 3.58), sf::Vector2f(0, 0), 0, 1, 3);
+	
+	
+	//createPolygon(sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
+	//createPolygon(sf::Vector2f(17, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
 }
 
 MainLoop::~MainLoop()
@@ -69,10 +90,10 @@ MainLoop::~MainLoop()
 void MainLoop::setSystems()
 {
 	ex.systems.add<RenderSystem>(window);
-	ex.systems.add<MovementSystem>();
 	ex.systems.add<MouseDragSystem>(window, camera);
 	ex.systems.add<ForcesSystem>(ex.events);
-	ex.systems.add<CollisionSystem>();
+	ex.systems.add<CollisionSystem>(gravity);
+	ex.systems.add<MovementSystem>();
 	ex.systems.configure();
 }
 
@@ -114,12 +135,12 @@ void MainLoop::loop()
 			sf::Vector2i mouse_pos = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
 				mouse_posf = window.mapPixelToCoords(mouse_pos, camera);					
 			}
-			/*else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+			else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
 			{
 				createCircle(mouse_posf, sf::Vector2f(0, 0), 1, sf::Color::Green, 0.25f);
 				++poligonsCount;
 				std::cout << "obj Count: " << poligonsCount << std::endl;
-			}*/
+			}
 			if (event.type == sf::Event::KeyPressed)
 			{
 				while (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
@@ -136,6 +157,12 @@ void MainLoop::loop()
 					++poligonsCount;
 					std::cout << "obj Count: " << poligonsCount << std::endl;
 				}	
+				else if (event.key.code == sf::Keyboard::E)
+				{
+					createPolygon(mouse_posf, sf::Vector2f(0, 0), 0, 5, 3);
+					++poligonsCount;
+					std::cout << "obj Count: " << poligonsCount << std::endl;
+				}
 			}
 		}
 		time += clock.restart();
@@ -173,6 +200,7 @@ void MainLoop::createCircle(sf::Vector2f pos, sf::Vector2f vel, float mass, sf::
 	en.assign<MOfInertia>(0.5f* mass *r*r);
 	en.assign<Friction>(0.7);
 	en.assign<Type>(Type::CIRCLE);
+	en.assign<IsResting>();
 }
 void MainLoop::createPolygon(sf::Vector2f pos, sf::Vector2f vel, float rotation, int mass, int polyIndex)
 {
@@ -189,4 +217,5 @@ void MainLoop::createPolygon(sf::Vector2f pos, sf::Vector2f vel, float rotation,
 	en.assign<Friction>(0.7);
 	en.assign<VertexArray>(vertCont.vertexArrays[polyIndex], vertCont.normals[polyIndex]);
 	en.assign<Type>(Type::POLYGON);
+	en.assign<IsResting>();
 }

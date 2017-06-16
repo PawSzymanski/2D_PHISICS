@@ -2,7 +2,7 @@
 
 
 
-CollisionSystem::CollisionSystem()
+CollisionSystem::CollisionSystem(sf::Vector2f &gravity) : gravity(gravity)
 {
 	dispatch[Type::CIRCLE][Type::CIRCLE] = isCollidingCC;
 	dispatch[Type::CIRCLE][Type::POLYGON] = isCollidingCP;
@@ -20,26 +20,35 @@ void CollisionSystem::PositionalCorrection(Manifold &m)
 	{
 		return;
 	}
+	
 	sf::Vector2f correction = m.normal* 0.9f*(m.penetration / (mas->invMass + mas1->invMass));
 	posH1->pos -= correction * mas->invMass;
 	posH2->pos += correction * mas1->invMass;
+	//posH1->pos = posH1->prevPos;
+	//posH2->pos = posH2->prevPos;
 }
 
 
 
-void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev)
+void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev, float dt)
 {
+	//std::cout << "." << std::endl;
 	LinearVelocity::Handle velH1 = m.en1.component<LinearVelocity>(), velH2 = m.en2.component<LinearVelocity>();
 	Position::Handle posH1 = m.en1.component<Position>(), posH2 = m.en2.component<Position>();
 	Mass::Handle massH1 = m.en1.component<Mass>(), massH2 = m.en2.component<Mass>();
 	AngularVelocity::Handle angvelH1 = m.en1.component<AngularVelocity>(), angvelH2 = m.en2.component<AngularVelocity>();
 	MOfInertia::Handle inertH1 = m.en1.component<MOfInertia>(), inertH2 = m.en2.component<MOfInertia>();
 	Friction::Handle frH1 = m.en1.component<Friction>(), frH2 = m.en2.component<Friction>();
+	IsResting::Handle isRestH1 = m.en1.component<IsResting>(), isRestH2 = m.en2.component<IsResting>();
+
+
+	isRestH1->isIt = false;
+	isRestH2->isIt = false;
+
 
 
 	float restitution = 0.5f;
 	
-
 	if (equal(massH1->invMass + massH2->invMass, 0))
 	{
 		
@@ -59,12 +68,36 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev)
 	sf::Vector2f relativeVel = velH2->vel + crossSV(angvelH2->radians(), contact2) -
 		velH1->vel - crossSV(angvelH1->radians(), contact1);
 
+
 	float contactVel = dot(relativeVel, m.normal);
 	
 	//std::cout << vecLenght(relativeVel) << " " << vecLenght(m.normal) << std:: endl;
 	if (contactVel > 0)
 		return;
 	
+	float relVelLeng = vecLenghtSq(relativeVel);
+	float gravityLeng = vecLenghtSq(gravity) * dt;
+
+	if (relVelLeng < gravityLeng + EPSILON )
+	{
+		restitution = 0.f;
+		//std::cout << "dziala" << std::endl;
+	}
+	float velLengh1 = vecLenghtSq(velH1->vel),
+		velLenght2 =  vecLenghtSq(velH2->vel);
+
+	if (abs_f(crossVV(m.normal, gravity) < EPSILON && dot(m.normal, gravity) < 0) && velLenght2 < gravityLeng + EPSILON)
+	{
+		isRestH1->isIt = true;
+		//std::cout << "dziala1" << std::endl;
+	}
+	
+	if (abs_f(crossVV(m.normal, gravity) < EPSILON && dot(m.normal, gravity) < 0) && velLengh1 < EPSILON + gravityLeng)
+	{
+		isRestH2->isIt = true;
+		//std::cout << "dziala1" << std::endl;
+	}
+
 	float contact1XNormal = crossVV(contact1, m.normal);
 	float contact2XNormal = crossVV(contact2, m.normal);
 	float invMassSum = massH1->invMass + massH2->invMass + sqr(contact1XNormal) *inertH1->invI + sqr(contact2XNormal) *inertH2->invI;
@@ -127,7 +160,7 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 
 	for(int i=0; i<entitiesCount; ++i)
 	{
-		ev.emit<ApplyForceEvent>(sf::Vector2f(0, 0), sf::Vector2f(0, 0.098), ens[i]); //GRAWITEJSZYN
+
 
 		for (int j=i+1; j<entitiesCount; ++j)
 		{			
@@ -143,11 +176,16 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 			if (!m.contactsCount)
 				continue;
 		
-			ResolveCollision(m,ev);
+			ResolveCollision(m,ev,dt);
 					
 			PositionalCorrection(m);
 			//std::cout << "tak: " <<m.penetration<< std::endl;
 		}
+		IsResting::Handle isRestingH = ens[i].component<IsResting>();
+		if (!isRestingH->isIt)
+		ev.emit<ApplyForceEvent>(sf::Vector2f(0, 0), gravity * static_cast<float>(dt), ens[i]); //GRAWITEJSZYN
+
+		isRestingH->isIt = false;
 	}
 }
 
