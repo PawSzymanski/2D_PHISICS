@@ -1,9 +1,10 @@
 #pragma once
-#include <entityx\entityx.h>
-#include <SFML\Graphics.hpp>
-#include "..\components.h"
-#include "..\Events.h"
-#include "..\AutisticCmath.h"
+#include <float.h>
+#include <entityx/entityx.h>
+#include <SFML/Graphics.hpp>
+#include "../components.h"
+#include "../Events.h"
+#include "../AutisticCmath.h"
 
 
 class MouseDragSystem : public entityx::System<MouseDragSystem>

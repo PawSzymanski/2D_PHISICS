@@ -1,12 +1,12 @@
 #pragma once
-#include <entityx\entityx.h>
-#include <SFML\Graphics.hpp>
+#include <entityx/entityx.h>
+#include <SFML/Graphics.hpp>
 #include <cmath>
 
-#include "..\isCollidingFuns.h"
-#include "..\components.h"
-#include "..\Events.h"
-#include "..\AutisticCmath.h"
+#include "../isCollidingFuns.h"
+#include "../components.h"
+#include "../Events.h"
+#include "../AutisticCmath.h"
 
 class CollisionSystem : public entityx::System<CollisionSystem>
 {

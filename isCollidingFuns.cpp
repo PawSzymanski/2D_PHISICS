@@ -14,7 +14,9 @@ void isCollidingCC(Manifold &man)
 	{
 		return;
 	}
-	man.normal = vecNormalize(posH2->pos - posH1->pos);
+
+    sf::Vector2f dPos = posH2->pos - posH1->pos;
+    man.normal = vecNormalize(dPos);
 	man.contacts[man.contactsCount] = posH1->pos + man.normal*cirH1->r;
 	++man.contactsCount;
 	man.penetration = sumR - dist;
@@ -83,7 +85,9 @@ void isCollidingCP(Manifold & man)
 		//std::cout << "V1" << std::endl;
 		if (distanceSq(vertex1, centerCir) > (cirH1->r*cirH1->r) )
 			return;
-		man.normal = rotMatrix * vecNormalize(vertex1 - centerCir);
+
+        sf::Vector2f v1_c = vertex1 - centerCir;
+        man.normal = rotMatrix * vecNormalize(v1_c);
 		man.contactsCount = 1;
 		man.contacts[0] = rotMatrix * vertex1 + posH2->pos;
 		man.penetration = cirH1->r - vertex1Sep;
@@ -93,7 +97,9 @@ void isCollidingCP(Manifold & man)
 		//std::cout << "V2" << std::endl;
 		if (distanceSq(vertex2, centerCir) > (cirH1->r*cirH1->r))
 			return;
-		man.normal = rotMatrix * vecNormalize(vertex2 - centerCir);
+
+        sf::Vector2f v2_c = vertex2 - centerCir;
+        man.normal = rotMatrix * vecNormalize(v2_c);
 		man.contactsCount = 1;
 		man.contacts[0] = rotMatrix * vertex2 + posH2->pos;
 		man.penetration = cirH1->r - vertex2Sep;

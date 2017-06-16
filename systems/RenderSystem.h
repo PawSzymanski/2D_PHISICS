@@ -1,7 +1,7 @@
 #pragma once
-#include <entityx\entityx.h>
-#include <SFML\Graphics.hpp>
-#include "..\components.h"
+#include <entityx/entityx.h>
+#include <SFML/Graphics.hpp>
+#include "../components.h"
 
 class RenderSystem : public entityx::System<RenderSystem>
 {

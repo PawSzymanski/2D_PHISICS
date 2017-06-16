@@ -1,7 +1,7 @@
 #pragma once
 
-#include <entityx\entityx.h>
-#include <SFML\Graphics.hpp>
+#include <entityx/entityx.h>
+#include <SFML/Graphics.hpp>
 
 
 

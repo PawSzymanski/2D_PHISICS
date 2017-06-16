@@ -1,7 +1,7 @@
 #pragma once
 
-#include <entityx\entityx.h>
-#include "..\components.h"
+#include <entityx/entityx.h>
+#include "../components.h"
 
 class MovementSystem : public entityx::System<MovementSystem>
 {
