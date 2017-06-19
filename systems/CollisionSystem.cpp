@@ -27,8 +27,8 @@ void CollisionSystem::PositionalCorrection(Manifold &m)
     Position::Handle targetPos = not_flip? posH1 : posH2;
     Mass::Handle targetMass = not_flip? massH1 : massH2;
 	
-    sf::Vector2f correction = (m.normal* 1.0f * m.penetration) / (massH1->invMass + massH2->invMass);
-    targetPos->pos -=  (-1.0f + (2.0f * not_flip)) *correction * targetMass->invMass;
+    sf::Vector2f correction = (m.normal* 1.0f * m.penetration) ;// (massH1->invMass + massH2->invMass);
+    targetPos->pos -=  (-1.0f + (2.0f * not_flip)) *correction * (1.0f * (targetMass->invMass != 0));
     //posH2->pos += correction * mas1->invMass;
 }
 

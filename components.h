@@ -142,3 +142,15 @@ struct IsResting : entityx::Component<IsResting>
 	{}
 		bool isIt;
 };
+
+struct Joint :entityx::Component<Joint>
+{
+    Joint(entityx::Entity en, entityx::Entity en1, sf::Vector2f pos, sf::Vector2f pos1, float lenght)
+        :pos(pos), pos1(pos1), en(en), en1(en1), lenght(lenght){}
+
+    sf::Vector2f pos;
+    sf::Vector2f pos1;
+    entityx::Entity en;
+    entityx::Entity en1;
+    float lenght;
+};

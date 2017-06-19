@@ -19,9 +19,10 @@ class MouseDragSystem : public entityx::System<MouseDragSystem>
 	bool line_started;
 	sf::RenderWindow &win;
 	sf::View & camera;
+    sf::Vector2f & mouse_pos;
 
 public:
-	MouseDragSystem(sf::RenderWindow & win, sf::View & camera);
+    MouseDragSystem(sf::RenderWindow & win, sf::View & camera, sf::Vector2f &mouse_pos);
 	~MouseDragSystem();
 
 	void update(entityx::EntityManager & en, entityx::EventManager &ev, double dt);

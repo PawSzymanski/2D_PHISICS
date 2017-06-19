@@ -19,9 +19,9 @@ void RenderSystem::update(entityx::EntityManager & en, entityx::EventManager & e
 	Line::Handle line;
 	Transform::Handle trans;
 	VertexArray::Handle vArray;
+    Joint::Handle joint;
+
 	win.clear(sf::Color::Blue);
-
-
 
 	for (auto entity : en.entities_with_components(vArray, trans))
 	{

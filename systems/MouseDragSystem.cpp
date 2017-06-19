@@ -1,7 +1,7 @@
 #include "MouseDragSystem.h"
 
-MouseDragSystem::MouseDragSystem(sf::RenderWindow & win, sf::View & camera)
-	:win(win), camera(camera), line_started(false)
+MouseDragSystem::MouseDragSystem(sf::RenderWindow & win, sf::View & camera, sf::Vector2f& mouse_pos)
+    :win(win), camera(camera), line_started(false), mouse_pos(mouse_pos)
 {
 }
 
@@ -17,7 +17,7 @@ void MouseDragSystem::update(entityx::EntityManager & en, entityx::EventManager 
 	{
 		
 		lineH->line[0].position = obj_trans->trans * click_pos;
-		lineH->line[1].position = win.mapPixelToCoords(sf::Mouse::getPosition() - win.getPosition() - sf::Vector2i(10, 30), camera);
+        lineH->line[1].position = mouse_pos;
 		
 		sf::Vector2f impulse = lineH->line[1].position - lineH->line[0].position;
 		//sf::Vector2f point = click_pos + impulse;
@@ -37,7 +37,7 @@ void MouseDragSystem::update(entityx::EntityManager & en, entityx::EventManager 
 		for (auto entity : en.entities_with_components(circ, obj_trans, rot))
 		{
 			//std::cout << pos->pos.x << " " << pos->pos.y << " ---- " << win.mapPixelToCoords(sf::Mouse::getPosition(), camera).x << " " << win.mapPixelToCoords(sf::Mouse::getPosition(),camera).y << std::endl;
-			click_pos = win.mapPixelToCoords(sf::Mouse::getPosition() - win.getPosition() - sf::Vector2i(10,30),camera) ;
+            click_pos = mouse_pos ;
 			click_pos = obj_trans->trans.getInverse() * click_pos;
 			if (circ->r * circ->r > click_pos.x * click_pos.x + click_pos.y * click_pos.y)
 			{
@@ -53,7 +53,7 @@ void MouseDragSystem::update(entityx::EntityManager & en, entityx::EventManager 
 		for (auto entity : en.entities_with_components(vert, obj_trans, rot))
 		{
 			//std::cout << pos->pos.x << " " << pos->pos.y << " ---- " << win.mapPixelToCoords(sf::Mouse::getPosition(), camera).x << " " << win.mapPixelToCoords(sf::Mouse::getPosition(),camera).y << std::endl;
-			click_pos = win.mapPixelToCoords(sf::Mouse::getPosition() - win.getPosition() - sf::Vector2i(10, 30), camera);
+            click_pos = mouse_pos;
 			click_pos = obj_trans->trans.getInverse() * click_pos;
 
 			float max_sep = -FLT_MAX;
