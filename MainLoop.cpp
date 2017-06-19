@@ -70,13 +70,13 @@ MainLoop::MainLoop() : gravity(0.0f, 9.8)
     //createPolygon(sf::Vector2f(10, 7), sf::Vector2f(0, 0), 0, 1, 2);
 
     createPolygon(sf::Vector2f(8.75, 10.15), sf::Vector2f(0, 0), 0, 0, 1);
-    //createPolygon(sf::Vector2f(8.75, 9.64), sf::Vector2f(0, 0), 0, 1, 3);
-    //createPolygon(sf::Vector2f(8.75, 8.63), sf::Vector2f(0, 0), 0, 1, 3);
-    //createPolygon(sf::Vector2f(8.75, 7.62), sf::Vector2f(0, 0), 0, 1, 3);
-    //createPolygon(sf::Vector2f(8.75, 6.61), sf::Vector2f(0, 0), 0, 1, 3);
-    //createPolygon(sf::Vector2f(8.75, 5.60), sf::Vector2f(0, 0), 0, 1, 3);
-    //createPolygon(sf::Vector2f(8.75, 4.59), sf::Vector2f(0, 0), 0, 1, 3);
-    //createPolygon(sf::Vector2f(8.75, 3.58), sf::Vector2f(0, 0), 0, 1, 3);
+    createPolygon(sf::Vector2f(8.75, 9.64), sf::Vector2f(0, 0), 0, 7 , 3);
+    createPolygon(sf::Vector2f(8.75, 8.63), sf::Vector2f(0, 0), 0, 6 , 3);
+    createPolygon(sf::Vector2f(8.75, 7.62), sf::Vector2f(0, 0), 0, 5 , 3);
+    createPolygon(sf::Vector2f(8.75, 6.61), sf::Vector2f(0, 0), 0, 4 , 3);
+    createPolygon(sf::Vector2f(8.75, 5.60), sf::Vector2f(0, 0), 0, 3 , 3);
+    createPolygon(sf::Vector2f(8.75, 4.59), sf::Vector2f(0, 0), 0, 2 , 3);
+    createPolygon(sf::Vector2f(8.75, 3.58), sf::Vector2f(0, 0), 0, 1, 3);
 	
 	
     createPolygon(sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
