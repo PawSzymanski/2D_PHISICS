@@ -34,7 +34,7 @@ public:
 private:
 	void createCircle(sf::Vector2f pos, sf::Vector2f vel, float mass, sf::Color col, float r);
 
-	void createPolygon(sf::Vector2f pos, sf::Vector2f vel, float rotation, int mass, int polyIndex);
+    void createPolygon(sf::Vector2f pos, sf::Vector2f vel, float rotation, float mass, int polyIndex);
 
 	
 };

@@ -14,18 +14,22 @@ CollisionSystem::CollisionSystem(sf::Vector2f &gravity) : gravity(gravity)
 void CollisionSystem::PositionalCorrection(Manifold &m)
 {
 	Position::Handle posH1 = m.en1.component<Position>(), posH2 = m.en2.component<Position>();
-	//::Handle vel = en.component<Velocity>(), vel1 = en1.component<Velocity>();
-	Mass::Handle mas = m.en1.component<Mass>(), mas1 = m.en2.component<Mass>();
-	if (equal(mas->invMass + mas1->invMass, 0))
-	{
+    Mass::Handle massH1 = m.en1.component<Mass>(), massH2 = m.en2.component<Mass>();
+
+    if (equal(massH1->invMass + massH2->invMass, 0))
 		return;
-	}
+
+    sf::Vector2f gravN = vecNormalize(gravity);
+    float d1 = dot(-gravN, posH1->pos);
+    float d2 = dot(-gravN, posH2->pos);
+
+    bool not_flip = d1 > d2;
+    Position::Handle targetPos = not_flip? posH1 : posH2;
+    Mass::Handle targetMass = not_flip? massH1 : massH2;
 	
-	sf::Vector2f correction = m.normal* 0.9f*(m.penetration / (mas->invMass + mas1->invMass));
-	posH1->pos -= correction * mas->invMass;
-	posH2->pos += correction * mas1->invMass;
-	//posH1->pos = posH1->prevPos;
-	//posH2->pos = posH2->prevPos;
+    sf::Vector2f correction = (m.normal* 1.0f * m.penetration) / (massH1->invMass + massH2->invMass);
+    targetPos->pos -=  (-1.0f + (2.0f * not_flip)) *correction * targetMass->invMass;
+    //posH2->pos += correction * mas1->invMass;
 }
 
 
@@ -182,8 +186,9 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 			//std::cout << "tak: " <<m.penetration<< std::endl;
 		}
 		IsResting::Handle isRestingH = ens[i].component<IsResting>();
+        Mass::Handle mass = ens[i].component<Mass>();
 		if (!isRestingH->isIt)
-		ev.emit<ApplyForceEvent>(sf::Vector2f(0, 0), gravity * static_cast<float>(dt), ens[i]); //GRAWITEJSZYN
+            ev.emit<ApplyForceEvent>(sf::Vector2f(0, 0), gravity * mass->mass * static_cast<float>(dt), ens[i]); //GRAWITEJSZYN
 
 		isRestingH->isIt = false;
 	}
