@@ -1,10 +1,9 @@
-#ifndef JOINTSYSTEM_H
-#define JOINTSYSTEM_H
+#pragma once
 
 #include <entityx/entityx.h>
-#include "components.h"
-#include "AutisticCmath.h"
-#include "Events.h"
+#include "..\components.h"
+#include "..\AutisticCmath.h"
+#include "..\Events.h"
 
 class JointSystem : public entityx::System<JointSystem>
 {
@@ -14,5 +13,4 @@ public:
     JointSystem();
     void update(entityx::EntityManager & en, entityx::EventManager & ev, double dt);
 };
-
-#endif // JOINTSYSTEM_H
+ // JOINTSYSTEM_H
