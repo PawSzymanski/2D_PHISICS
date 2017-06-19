@@ -275,6 +275,14 @@ int clip(sf::Vector2f normal, float c, sf::Vector2f *face)
 	return sp;
 }
 
+inline bool broadphase(sf::FloatRect &a, sf::FloatRect &b)
+{
+   return (((b.left - a.left) < a.width && ( b.top - a.top ) < a.height) ||
+           ((a.left - b.left) < b.width && ( a.top - b.top ) < b.height));
+           //( (a.left > b.left  && a.left < b.left+b.width && a.top > b.top && a.top < b.top+ b.height) ||
+           //(b.left > a.left  && b.left < a.left+a.width && b.top > a.top && b.top < a.top+ a.height));
+}
+
 
 void isCollidingPP(Manifold & man)
 {
@@ -283,10 +291,19 @@ void isCollidingPP(Manifold & man)
 		posH2 = man.en2.component<Position>();
 	VertexArray::Handle verH1 = man.en1.component<VertexArray>(),
 		verH2 = man.en2.component<VertexArray>();
-	Transform::Handle transH1 = man.en1.component<Transform>(),
-		transH2 = man.en2.component<Transform>();
 	Rotation::Handle  rotH1 = man.en1.component<Rotation>(),
 		rotH2 = man.en2.component<Rotation>();
+
+    sf::FloatRect rect1 = verH1->vert.getBounds(),
+            rect2 = verH2->vert.getBounds();
+    rect1.left += posH1->pos.x;
+    rect1.top += posH1->pos.y;
+    rect2.left += posH2->pos.x;
+    rect2.top += posH2->pos.y;
+
+    if(!broadphase(rect1, rect2))
+        return;
+
 	sf::Transform ROTMATRIX1, ROTMATRIX2;
 	ROTMATRIX1.rotate(rotH1->degree);
 	ROTMATRIX2.rotate(rotH2->degree);
