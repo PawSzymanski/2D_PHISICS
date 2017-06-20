@@ -23,7 +23,7 @@ void CollisionSystem::PositionalCorrection(Manifold &m)
     float d1 = dot(-gravN, posH1->pos);
     float d2 = dot(-gravN, posH2->pos);
 
-    bool not_flip = d1 > d2;
+    bool not_flip = (d1 > d2 || massH2->invMass == 0) && (massH1->invMass != 0);
     Position::Handle targetPos = not_flip? posH1 : posH2;
     Mass::Handle targetMass = not_flip? massH1 : massH2;
 	

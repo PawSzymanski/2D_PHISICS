@@ -179,7 +179,7 @@ void MainLoop::loop()
 				{ }
 				if (event.key.code == sf::Keyboard::Q)
 				{
-					createPolygon(mouse_posf, sf::Vector2f(0, 0), 0, 3, 0);
+                    createPolygon(mouse_posf, sf::Vector2f(0, 0), 180, 3, 0);
 					++poligonsCount;
 					std::cout << "obj Count: " << poligonsCount << std::endl;
 				}
