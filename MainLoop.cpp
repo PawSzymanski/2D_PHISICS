@@ -90,11 +90,11 @@ MainLoop::MainLoop() : gravity(0.0f, 9.8)
     auto c4 = createCircle(sf::Vector2f(5,5), sf::Vector2f(0,0),1,sf::Color::Green,0.3f);
     auto c5 = createCircle(sf::Vector2f(5,6), sf::Vector2f(0,0),1,sf::Color::Green,0.3f);
 
-    createJoint(p1,c1,sf::Vector2f(0,0),sf::Vector2f(0,0),1);
-    createJoint(c1,c2,sf::Vector2f(0,0),sf::Vector2f(0,0),1);
-    createJoint(c2,c3,sf::Vector2f(0,0),sf::Vector2f(0,0),1);
-    createJoint(c3,c4,sf::Vector2f(0,0),sf::Vector2f(0,0),1);
-    createJoint(c4,c5,sf::Vector2f(0,0),sf::Vector2f(0,0),1);
+    createJoint(p1,c1,sf::Vector2f(0,0),sf::Vector2f(0,-0.2f),0.5f);
+    createJoint(c1,c2,sf::Vector2f(0,0.2f),sf::Vector2f(0,-0.2f),0.5f);
+    createJoint(c2,c3,sf::Vector2f(0,0.2f),sf::Vector2f(0,-0.2f),0.5f);
+    createJoint(c3,c4,sf::Vector2f(0,0.2f),sf::Vector2f(0,-0.2f),0.5f);
+    createJoint(c4,c5,sf::Vector2f(0,0.2f),sf::Vector2f(0,-0.2f),0.5f);
 
     auto p2 = createPolygon(sf::Vector2f(7,3), sf::Vector2f(0,0),0,0,3);
     auto p3 = createPolygon(sf::Vector2f(14,3), sf::Vector2f(0,0),0,0,3);

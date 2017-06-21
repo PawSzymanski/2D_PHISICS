@@ -78,9 +78,14 @@ void JointSystem::update(entityx::EntityManager &en, entityx::EventManager &ev, 
         Transform::Handle t1 = joint->en1.component<Transform>();
         sf::Vector2f point = (t->trans * joint->pos);
         sf::Vector2f point1 = (t1->trans * joint->pos1);
+        Rotation::Handle rot = joint->en.component<Rotation>();
+        Rotation::Handle rot1 = joint->en1.component<Rotation>();
+        sf::Transform rotm, rot1m;
+        rotm.rotate(rot->degree);
+        rot1m.rotate(rot1->degree);
 
-        ev.emit<ApplyForceEvent>(joint->pos, -force, joint->en);
-        ev.emit<ApplyForceEvent>(joint->pos1, force, joint->en1);
+        ev.emit<ApplyForceEvent>( rotm * joint->pos, -force, joint->en);
+        ev.emit<ApplyForceEvent>( rot1m * joint->pos1, force, joint->en1);
 
         line->line[0].position = point;
         line->line[1].position = point1;
