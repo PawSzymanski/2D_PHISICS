@@ -1,9 +1,9 @@
 #pragma once
 
 #include <entityx/entityx.h>
-#include "..\components.h"
-#include "..\AutisticCmath.h"
-#include "..\Events.h"
+#include "../components.h"
+#include "../AutisticCmath.h"
+#include "../Events.h"
 
 class JointSystem : public entityx::System<JointSystem>
 {
