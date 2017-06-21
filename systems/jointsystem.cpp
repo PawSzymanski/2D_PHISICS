@@ -48,7 +48,7 @@ sf::Vector2f JointSystem::resolve(Joint::Handle joint, float& sep, sf::Vector2f 
 
     float force = -(1.0f + restitution) * contactVel;
     force /= invMassSum;
-    return(normal * force);
+    return(-normal * force);
 }
 
 void JointSystem::correct(Joint::Handle joint, float sep, sf::Vector2f normal)
