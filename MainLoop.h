@@ -4,14 +4,9 @@
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
 
-#include "systems/CollisionSystem.h"
-#include "systems/ForcesSystem.h"
 #include "systems/MouseDragSystem.h"
-#include "systems/MovementSystem.h"
 #include "systems/RenderSystem.h"
-#include "systems/jointsystem.h"
 #include "Container.h"
-#include "components.h"
 #include "phisics_2d.h"
 
 
