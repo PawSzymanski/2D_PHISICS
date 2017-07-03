@@ -27,8 +27,6 @@ void ForcesSystem::update(entityx::EntityManager & en, entityx::EventManager & e
 		AngVelH->degree += AngForceH->force * 57.29577f * inerH->invI;// from radians to degrees;
 		LinForceH->force = sf::Vector2f(0, 0);
 		AngForceH->force = 0.0f;
-
-		//std::cout << vecLenght(LinVelH->vel) << std::endl;
 	}
 }
 

@@ -105,7 +105,7 @@ MainLoop::MainLoop() : gravity(0.0f, 9.8), phisics(ex, vertCont, gravity)
     phisics.createJoint(c2,c3,sf::Vector2f(0,0.2f),sf::Vector2f(0,-0.2f),0.5f);
     phisics.createJoint(c3,c4,sf::Vector2f(0,0.2f),sf::Vector2f(0,-0.2f),0.5f);
     phisics.createJoint(c4,c5,sf::Vector2f(0,0.2f),sf::Vector2f(0,-0.2f),0.5f);
-
+	
     auto p2 = ex.entities.create();
     phisics.createPolygon(p2,sf::Vector2f(7,3), sf::Vector2f(0,0),0,0,3);
     auto p3 = ex.entities.create();
@@ -127,7 +127,7 @@ MainLoop::MainLoop() : gravity(0.0f, 9.8), phisics(ex, vertCont, gravity)
     phisics.createJoint(c8,c9,sf::Vector2f(0,0),sf::Vector2f(0,0),1.5f);
     phisics.createJoint(c9,c10,sf::Vector2f(0,0),sf::Vector2f(0,0),1.5f);
     phisics.createJoint(c10,p3,sf::Vector2f(0,0),sf::Vector2f(0,0),1.5f);
-
+	
 }
 
 MainLoop::~MainLoop()

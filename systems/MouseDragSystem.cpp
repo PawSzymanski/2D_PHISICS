@@ -20,23 +20,19 @@ void MouseDragSystem::update(entityx::EntityManager & en, entityx::EventManager 
         lineH->line[1].position = mouse_pos;
 		
 		sf::Vector2f impulse = lineH->line[1].position - lineH->line[0].position;
-		//sf::Vector2f point = click_pos + impulse;
-		//click_pos = obj_trans->trans * click_pos;
+	
 		impulse /= 10.0f;
 	
 		sf::Transform t;
 		sf::Vector2f p = t.rotate(rot->degree) * click_pos;
 
-		//std::cout << click_pos.x << " " << click_pos.y << std::endl;
-		//std::cout << crossVV(click_pos, impulse) << std::endl;
 		ev.emit<ApplyForceEvent>(p, impulse, this->en);
 	}
 
 	if (!line_started && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		for (auto entity : en.entities_with_components(circ, obj_trans, rot))
-		{
-			//std::cout << pos->pos.x << " " << pos->pos.y << " ---- " << win.mapPixelToCoords(sf::Mouse::getPosition(), camera).x << " " << win.mapPixelToCoords(sf::Mouse::getPosition(),camera).y << std::endl;
+		{	
             click_pos = mouse_pos ;
 			click_pos = obj_trans->trans.getInverse() * click_pos;
 			if (circ->r * circ->r > click_pos.x * click_pos.x + click_pos.y * click_pos.y)
@@ -52,7 +48,6 @@ void MouseDragSystem::update(entityx::EntityManager & en, entityx::EventManager 
 
 		for (auto entity : en.entities_with_components(vert, obj_trans, rot))
 		{
-			//std::cout << pos->pos.x << " " << pos->pos.y << " ---- " << win.mapPixelToCoords(sf::Mouse::getPosition(), camera).x << " " << win.mapPixelToCoords(sf::Mouse::getPosition(),camera).y << std::endl;
             click_pos = mouse_pos;
 			click_pos = obj_trans->trans.getInverse() * click_pos;
 

@@ -29,14 +29,12 @@ void CollisionSystem::PositionalCorrection(Manifold &m)
 	
     sf::Vector2f correction = (m.normal* 1.0f * m.penetration) ;// (massH1->invMass + massH2->invMass);
     targetPos->pos -=  (-1.0f + (2.0f * not_flip)) *correction * (1.0f * (targetMass->invMass != 0));
-    //posH2->pos += correction * mas1->invMass;
 }
 
 
 
 void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev, float dt)
 {
-	//std::cout << "." << std::endl;
 	LinearVelocity::Handle velH1 = m.en1.component<LinearVelocity>(), velH2 = m.en2.component<LinearVelocity>();
 	Position::Handle posH1 = m.en1.component<Position>(), posH2 = m.en2.component<Position>();
 	Mass::Handle massH1 = m.en1.component<Mass>(), massH2 = m.en2.component<Mass>();
@@ -45,11 +43,8 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev, 
 	Friction::Handle frH1 = m.en1.component<Friction>(), frH2 = m.en2.component<Friction>();
 	IsResting::Handle isRestH1 = m.en1.component<IsResting>(), isRestH2 = m.en2.component<IsResting>();
 
-
 	isRestH1->isIt = false;
 	isRestH2->isIt = false;
-
-
 
 	float restitution = 0.5f;
 	
@@ -60,9 +55,6 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev, 
 		velH2->vel = sf::Vector2f(0, 0);
 		return;
 	}
-	//system("pause");
-//	std::cout << m.force.x << " " << m.force.y << std::endl;
-//	system("pause");
 	for(int i=0; i<m.contactsCount ; ++i)
     {
 		 
@@ -74,8 +66,7 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev, 
 
 
 	float contactVel = dot(relativeVel, m.normal);
-	
-	//std::cout << vecLenght(relativeVel) << " " << vecLenght(m.normal) << std:: endl;
+
 	if (contactVel > 0)
 		return;
 	
@@ -85,7 +76,6 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev, 
 	if (relVelLeng < gravityLeng + EPSILON )
 	{
 		restitution = 0.f;
-		//std::cout << "dziala" << std::endl;
 	}
 	float velLengh1 = vecLenghtSq(velH1->vel),
 		velLenght2 =  vecLenghtSq(velH2->vel);
@@ -93,13 +83,11 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev, 
 	if (abs_f(crossVV(m.normal, gravity) < EPSILON && dot(m.normal, gravity) < 0) && velLenght2 < gravityLeng + EPSILON)
 	{
 		isRestH1->isIt = true;
-		//std::cout << "dziala1" << std::endl;
 	}
 	
 	if (abs_f(crossVV(m.normal, gravity) < EPSILON && dot(m.normal, gravity) < 0) && velLengh1 < EPSILON + gravityLeng)
 	{
 		isRestH2->isIt = true;
-		//std::cout << "dziala1" << std::endl;
 	}
 
 	float contact1XNormal = crossVV(contact1, m.normal);
@@ -108,14 +96,8 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev, 
 
 	float force = -(1.0f + restitution) * contactVel;
 	force /= invMassSum;
-	//force/= m.contactsCount;
-//	std::cout << m.force.x << " " << m.force.y << std::endl;
-//	system("pause");
+
 	m.force =  m.normal * force;
-	//std::cout << vecLenght(m.force) * invMassSum << std::endl;
-//	std::cout << m.force.x << " " << m.force.y << std::endl;
-//	system("pause");
-	//std::cout << contactVel.x << " " << contactVel.y << std::endl;
 	//friction 
 
 	sf::Vector2f t =( relativeVel - ( m.normal * dot(relativeVel, m.normal)));
@@ -125,8 +107,7 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev, 
 	float jt = -dot(relativeVel, t);
 
 	jt /= invMassSum;
-//	std::cout << m.force.x << " " << m.force.y << std::endl;
-//	system("pause");
+
 	if (!equal(jt, 0.0f))
 	{
 		sf::Vector2f frictionImpulse;
@@ -139,7 +120,6 @@ void CollisionSystem::ResolveCollision(Manifold &m, entityx::EventManager & ev, 
 		if (vecLenghtSq(frictionImpulse) > 0.001f)
 		m.force += frictionImpulse;
 	}
-//	std::cout << "force added" << i << ": " << m.force.x << " " << m.force.y << std::endl;
 	m.force /= static_cast<float>(m.contactsCount);
 	ev.emit<ApplyForceEvent>(contact2, m.force, m.en2);
 	ev.emit<ApplyForceEvent>(contact1, -m.force, m.en1);
@@ -183,7 +163,6 @@ void CollisionSystem::update(entityx::EntityManager & en, entityx::EventManager 
 			ResolveCollision(m,ev,dt);
 					
 			PositionalCorrection(m);
-			//std::cout << "tak: " <<m.penetration<< std::endl;
 		}
 		IsResting::Handle isRestingH = ens[i].component<IsResting>();
         Mass::Handle mass = ens[i].component<Mass>();
