@@ -163,6 +163,7 @@ struct ForcePoint : entityx::Component<ForcePoint>
 
 struct KeyAssigned : entityx::Component<KeyAssigned>
 {
+	// = sf::Keyboard::Key::B;
 	KeyAssigned(sf::Keyboard::Key k) : key (k)
 	{}
 	sf::Keyboard::Key key;

@@ -54,9 +54,9 @@ MainLoop::MainLoop() : gravity(0.0f, 9.8), phisics(ex, vertCont, gravity)
     square[1].position = sf::Vector2f(0.5, -0.5);
     square[1].color = sf::Color::Black;
     square[2].position = sf::Vector2f(0.5, 0.5);
-    square[2].color = sf::Color::White;
+    square[2].color = sf::Color::Black;
     square[3].position = sf::Vector2f(-0.5, 0.5);
-    square[3].color = sf::Color::White;
+    square[3].color = sf::Color::Black;
 
 
     vertCont.addPoly(triangle, 3);
@@ -83,10 +83,53 @@ MainLoop::MainLoop() : gravity(0.0f, 9.8), phisics(ex, vertCont, gravity)
     auto poly1 = ex.entities.create();
     auto poly2 = ex.entities.create();
     auto poly3 = ex.entities.create();
+
     phisics.createPolygon(poly1,sf::Vector2f(8.75, 10.15), sf::Vector2f(0, 0), 0, 0, 1);
     phisics.createPolygon(poly2,sf::Vector2f(0.5, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
     phisics.createPolygon(poly3,sf::Vector2f(17, 4.5), sf::Vector2f(0, 0), 90, 0, 1);
 
+
+
+	auto player1 = ex.entities.create();
+	phisics.createPolygon(player1 , sf::Vector2f(1.5 , 9), sf::Vector2f(0, 0),0, 1, 3);
+
+
+	auto engine1 = ex.entities.create();
+
+	engine1.assign<Position>(sf::Vector2f(0, 0));
+	engine1.assign<ForcePoint>(sf::Vector2f(0, 0), sf::Vector2f(0, -0.2));
+	engine1.assign<KeyAssigned>(sf::Keyboard::X);
+	engine1.assign<Line>(sf::Vector2f(0, 0), sf::Vector2f(0, 0),sf::Color::Magenta);
+
+	auto engine2 = ex.entities.create();
+	engine2.assign<Position>(sf::Vector2f(0, 0));
+	engine2.assign<ForcePoint>(sf::Vector2f(0.5, 0), sf::Vector2f(0, -0.2));
+	engine2.assign<KeyAssigned>(sf::Keyboard::C);
+	engine2.assign<Line>(sf::Vector2f(0, 0), sf::Vector2f(0, 0), sf::Color::Magenta);
+
+	auto engine3 = ex.entities.create();
+	engine3.assign<Position>(sf::Vector2f(0, 0));
+	engine3.assign<ForcePoint>(sf::Vector2f(-0.5, 0), sf::Vector2f(0, -0.2));
+	engine3.assign<KeyAssigned>(sf::Keyboard::Z);
+	engine3.assign<Line>(sf::Vector2f(0, 0), sf::Vector2f(0, 0), sf::Color::Magenta);
+
+	/*auto engine4 = ex.entities.create();
+	engine4.assign<Line>();
+	engine4.assign<Position>(sf::Vector2f(0, 0));
+	engine4.assign<LinearForce>(sf::Vector2f(0, 0));
+	engine4.assign<ForcePoint>(sf::Vector2f(0, 0));
+	engine4.assign<KeyAssigned>(sf::Keyboard::Z);
+	engine4.assign<Line>();
+
+	auto engine5 = ex.entities.create();
+	engine5.assign<Line>();
+	engine5.assign<Position>(sf::Vector2f(0, 0));
+	engine5.assign<LinearForce>(sf::Vector2f(0, 0));
+	engine5.assign<ForcePoint>(sf::Vector2f(0, 0));
+	engine5.assign<KeyAssigned>(sf::Keyboard::Z);
+	engine5.assign<Line>();*/
+
+/*
     auto p1 = ex.entities.create();
     phisics.createPolygon(p1, sf::Vector2f(3,1), sf::Vector2f(0,0),0,0,3);
     auto c1 = ex.entities.create();
@@ -97,7 +140,7 @@ MainLoop::MainLoop() : gravity(0.0f, 9.8), phisics(ex, vertCont, gravity)
     phisics.createCircle(c3,sf::Vector2f(5,4), sf::Vector2f(0,0),1,sf::Color::Green,0.3f);
     auto c4 = ex.entities.create();
     phisics.createCircle(c4,sf::Vector2f(5,5), sf::Vector2f(0,0),1,sf::Color::Green,0.3f);
-    auto c5 = ex.entities.create();
+    auto c5 = ex.entities.create(); 
     phisics.createCircle(c5,sf::Vector2f(5,6), sf::Vector2f(0,0),1,sf::Color::Green,0.3f);
 
     phisics.createJoint(p1,c1,sf::Vector2f(0,0),sf::Vector2f(0,-0.2f),0.5f);
@@ -127,7 +170,7 @@ MainLoop::MainLoop() : gravity(0.0f, 9.8), phisics(ex, vertCont, gravity)
     phisics.createJoint(c8,c9,sf::Vector2f(0,0),sf::Vector2f(0,0),1.5f);
     phisics.createJoint(c9,c10,sf::Vector2f(0,0),sf::Vector2f(0,0),1.5f);
     phisics.createJoint(c10,p3,sf::Vector2f(0,0),sf::Vector2f(0,0),1.5f);
-	
+	*/
 }
 
 MainLoop::~MainLoop()
@@ -137,14 +180,16 @@ MainLoop::~MainLoop()
 void MainLoop::setSystems()
 {
     ex.systems.add<RenderSystem>(window);
-    ex.systems.add<MouseDragSystem>(window, camera, mouse_posf);   
+    ex.systems.add<MouseDragSystem>(window, camera, mouse_posf); 
+	ex.systems.add<AddForceToPlayer>();
     ex.systems.configure();
 }
 
 void MainLoop::update(float dt)
 {
     phisics.update(dt);
-    ex.systems.update<MouseDragSystem>(dt);   
+    ex.systems.update<MouseDragSystem>(dt);
+	ex.systems.update<AddForceToPlayer>(dt);
 }
 
 void MainLoop::render()

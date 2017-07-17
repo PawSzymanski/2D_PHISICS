@@ -6,8 +6,10 @@
 
 #include "systems/MouseDragSystem.h"
 #include "systems/RenderSystem.h"
+#include "systems/AddForceToPLayer.h"
 #include "Container.h"
 #include "phisics_2d.h"
+
 
 
 class MainLoop

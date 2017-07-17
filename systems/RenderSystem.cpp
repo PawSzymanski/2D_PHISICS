@@ -38,7 +38,10 @@ void RenderSystem::update(entityx::EntityManager & en, entityx::EventManager & e
 		win.draw(line->line, trans->trans);
 	}
 	for (auto entity : en.entities_with_components(line))
+	{
+		//std::cout << "line" << std::endl;
 		win.draw(line->line);
+	}
 
 	win.display();
 }
